@@ -11,6 +11,9 @@ GET http://localhost:3000/posts
 ### Get posts by sender
 GET http://localhost:3000/posts?sender=Gal
 
+### Get posts by id
+GET http://localhost:3000/posts/1
+
 ### Create a post (postId field will be added automatically)
 POST http://localhost:3000/posts
 Content-Type: application/json

@@ -50,7 +50,7 @@ const deletePost = async (req, res) => {
 const getPostByid = async (req, res) => {
     const postId = req.params.postId;
     try {
-        const postById = await Post.findById(postId);
+        const postById = await Post.find({ postId: postId });
         res.status(200).send(postById);
     } catch (error) {
         res.status(400).send(error.message);
