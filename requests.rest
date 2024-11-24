@@ -1,0 +1,33 @@
+### Get base URL
+GET http://localhost:3000
+
+######################################################
+#################### Posts Api #######################
+######################################################
+
+### Get all posts
+GET http://localhost:3000/posts
+
+### Get posts by sender
+GET http://localhost:3000/posts?sender=Gal
+
+### Create a post (postId field will be added automatically)
+POST http://localhost:3000/posts
+Content-Type: application/json
+
+{
+    "sender" : "Gabi",
+    "title" : "My First Post",
+    "content" : "Hello World, This is My First Post"
+}
+
+### Update a post by postId
+PUT http://localhost:3000/posts/1
+Content-Type: application/json
+
+{
+    "content" : "Hello World, This is My Updated Post"
+}
+
+### Delete a post by postId 
+DELETE  http://localhost:3000/posts/1
