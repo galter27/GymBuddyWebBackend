@@ -8,6 +8,9 @@ GET http://localhost:3000
 ### Get all posts
 GET http://localhost:3000/posts
 
+### Get posts by postId
+GET http://localhost:3000/posts/1
+
 ### Get posts by sender
 GET http://localhost:3000/posts?sender=Gal
 
