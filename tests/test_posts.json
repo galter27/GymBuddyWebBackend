@@ -1,0 +1,12 @@
+[
+    {
+        "title": "Test Post 1",
+        "content": "Test Content 1",
+        "sender": "Gal"
+    },
+    {
+        "title": "Test Post 2",
+        "content": "Test Content 2",
+        "sender": "Gabi"
+    }
+]

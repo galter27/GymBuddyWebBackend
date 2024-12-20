@@ -40,7 +40,7 @@ const deletePost = async (req, res) => {
         if (result.deletedCount === 0) {
             return res.status(404).send('Post not found');
         }
-        res.status(202).send({ message: `Post ${postId} deleted successfully` });
+        res.status(200).send({ message: `Post ${postId} deleted successfully` });
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -51,7 +51,11 @@ const getPostByid = async (req, res) => {
     const postId = req.params.postId;
     try {
         const postById = await Post.find({ postId: postId });
-        res.status(200).send(postById);
+        if (postById.length == 0) {
+            return res.status(404).send("Post not found");
+        } else {
+            res.status(200).send(postById);
+        }
     } catch (error) {
         res.status(400).send(error.message);
     }
