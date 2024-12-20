@@ -114,7 +114,7 @@ const getCommentById = async (req: Request, res: Response) => {
 };
 
 
-module.exports = {
+export default {
     getAllComments,
     createNewComment,
     deleteComment,

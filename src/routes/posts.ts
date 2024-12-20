@@ -5,7 +5,7 @@ import postConctoller from "../controllers/posts";
 router.get('/', postConctoller.getAllPosts);
 
 router.get('/:postId', (req, res) => {
-  postConctoller.getPostByid
+  postConctoller.getPostByid(req, res)
 });
 
 router.post('/', postConctoller.createNewPost);
