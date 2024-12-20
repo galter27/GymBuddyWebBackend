@@ -1,8 +1,9 @@
-const Comment = require('../models/comments');
-const Post = require('../models/posts');
+import Comment from '../models/comments';
+import Post from '../models/posts';
+import { Request, Response,  } from "express";
 
 // Get all comments
-const getAllComments = async (req, res) => {
+const getAllComments = async (req: Request, res: Response) => {
     try {
         const comments = await Comment.find();
         
@@ -13,24 +14,24 @@ const getAllComments = async (req, res) => {
 
         res.status(200).send(comments);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 
 // Get all comments for a specific post
-const getCommentsByPostId = async (req, res) => {
+const getCommentsByPostId = async (req: Request, res: Response) => {
     const { postId } = req.params;
     try {
         const comments = await Comment.find({ postId });
         res.status(200).send(comments);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Create new comment
-const createNewComment = async (req, res) => {
+const createNewComment = async (req: Request, res: Response) => {
     const { postId, sender, content } = req.body;
 
     try {
@@ -50,13 +51,13 @@ const createNewComment = async (req, res) => {
 
         res.status(201).send(newComment);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 
 // Update a comment
-const updateComment = async (req, res) => {
+const updateComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;
     const { content } = req.body;
 
@@ -73,12 +74,12 @@ const updateComment = async (req, res) => {
 
         res.status(200).send(updatedComment);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Delete a comment
-const deleteComment = async (req, res) => {
+const deleteComment = async (req: Request, res: Response) => {
     const commentId = req.params.commentId;
     try {
         const result = await Comment.deleteOne({ commentId });
@@ -87,12 +88,12 @@ const deleteComment = async (req, res) => {
         }
         res.status(202).send({ message: `Comment ${commentId} deleted successfully` });
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Get comment by ID
-const getCommentById = async (req, res) => {
+const getCommentById = async (req: Request, res: Response) => {
     const commentId = req.params.id;
 
     try {
@@ -108,7 +109,7 @@ const getCommentById = async (req, res) => {
         res.status(200).send(comment);
     } catch (error) {
         // Handle any errors that occur
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 

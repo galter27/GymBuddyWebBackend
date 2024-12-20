@@ -1,7 +1,8 @@
-const Post = require('../models/posts');
+import Post from "../models/posts"
+import { Request, Response,  } from "express";
 
 // Get all posts
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req: Request, res: Response) => {
     const sender = req.query.sender;
     try {
         if (sender) {
@@ -12,12 +13,12 @@ const getAllPosts = async (req, res) => {
             res.status(200).send(posts);
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Create a new post
-const createNewPost = async (req, res) => {
+const createNewPost = async (req: Request, res: Response) => {
     const post = req.body;
     try {
         const latestPost = await Post.findOne().sort({ postId: -1 });
@@ -28,12 +29,12 @@ const createNewPost = async (req, res) => {
         const newPost = await Post.create(post);
         res.status(201).send(newPost);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Delete a post
-const deletePost = async (req, res) => {
+const deletePost = async (req: Request, res: Response) => {
     const postId = req.params.postId;
     try {
         const result = await Post.deleteOne({ postId: postId });
@@ -42,12 +43,12 @@ const deletePost = async (req, res) => {
         }
         res.status(200).send({ message: `Post ${postId} deleted successfully` });
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Get post by id
-const getPostByid = async (req, res) => {
+const getPostByid = async (req: Request, res: Response) => {
     const postId = req.params.postId;
     try {
         const postById = await Post.find({ postId: postId });
@@ -57,12 +58,12 @@ const getPostByid = async (req, res) => {
             res.status(200).send(postById);
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
 // Update a post
-const updatePost = async (req, res) => {
+const updatePost = async (req: Request, res: Response) => {
     const postId = req.params.postId;
     const newContent = req.body.content;
 
@@ -80,11 +81,11 @@ const updatePost = async (req, res) => {
 
         res.status(200).send(updatedPost);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(error);
     }
 };
 
-module.exports = {
+export default {
     getAllPosts,
     createNewPost,
     deletePost,

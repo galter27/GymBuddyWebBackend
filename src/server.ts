@@ -1,12 +1,11 @@
-const express = require('express');
+import express, {Express} from "express";
 const app = express()
-const dotenv = require("dotenv").config()
+import dotenv from "dotenv";
+dotenv.config();
 const bodyParser = require("body-parser");
-
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
 // Database Connection
-
 const mongodbConnection = mongoose.connection;
 mongodbConnection.on("error", (error) => console.error(error));
 mongodbConnection.once("open", () => console.log("Successfully Connected to Database"));
@@ -30,11 +29,11 @@ app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
 
 const initApp = () => {
-  return new Promise(async (resolve, reject) => {
-    await mongoose.connect(process.env.DB_CONNECTION);
+  return new Promise<Express>(async (resolve, reject) => {
+    await mongoose.connect(process.env.DB_CONNECTION || "mongodb://localhost:27017/Posts");
     resolve(app);
   });
 }
 
 
-module.exports = initApp;
+export default initApp;

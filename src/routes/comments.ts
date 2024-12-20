@@ -1,4 +1,4 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 
 // Require the controller
@@ -17,4 +17,4 @@ router.delete('/:commentId', commentController.deleteComment);
 
 router.put('/:commentId', commentController.updateComment);
 
-module.exports = router;
+export default router;
