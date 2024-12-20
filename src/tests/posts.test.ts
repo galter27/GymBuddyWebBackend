@@ -13,6 +13,11 @@ const testPost = {
       "sender": "Gal"
 } as { title: string; content: string; sender: string; postId?: string };
 
+const invalidPost = {
+  title: "Test Post 1",
+  content: "Test Contnet 1"
+}
+
 
 beforeAll(async () => {
     console.log("Before all test");
@@ -43,9 +48,7 @@ describe("Posts Test", () => {
   });
 
   test("Test get post by id", async () => {
-    console.log("/posts/" + testPost.postId)
     const response = await request(app).get("/posts/" + testPost.postId);
-    console.log("body: " + response.body)
     expect(response.statusCode).toBe(200);
     expect(response.body[0].postId).toBe(testPost.postId);
   });
@@ -64,10 +67,7 @@ describe("Posts Test", () => {
   });
 
   test ("Test create new post fail", async () => {
-    const response = await request(app).post("/posts").send({
-        title: "Test Post 1",
-        content: "Test Contnet 1"
-    });
+    const response = await request(app).post("/posts").send(invalidPost);
     expect(response.statusCode).toBe(400);
   });
 

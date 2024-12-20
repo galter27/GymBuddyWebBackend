@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon ./src/app.ts",
-    "start": "tsc && node ./dist/app.js",
+    "start": "tsc && node ./dist/src/app.js",
     "test": "tsc && jest --detectOpenHandles --forceExit --coverage",
     "lint": "eslint . --ext .ts"
   },

@@ -1,5 +1,5 @@
 import Comment from '../models/comments';
-import Post from '../models/posts';
+// import Post from '../models/posts';
 import { Request, Response,  } from "express";
 
 // Get all comments
@@ -7,10 +7,10 @@ const getAllComments = async (req: Request, res: Response) => {
     try {
         const comments = await Comment.find();
         
-        // If no comments are found, return a 404 error
-        if (comments.length === 0) {
-            return res.status(404).send('No comments found.');
-        }
+        // // If no comments are found, return a 404 error
+        // if (comments.length === 0) {
+        //     return res.status(404).send('No comments found.');
+        // }
 
         res.status(200).send(comments);
     } catch (error) {
@@ -36,11 +36,11 @@ const createNewComment = async (req: Request, res: Response) => {
 
     try {
         // Check if the post with the given postId exists
-        const post = await Post.findOne({ postId });
+        // const post = await Post.findOne({ postId });
 
-        if (!post) {
-            return res.status(404).send(`Post with postId ${postId} not found.`);
-        }
+        // if (!post) {
+        //     return res.status(404).send(`Post with postId ${postId} not found.`);
+        // }
 
         const latestComment = await Comment.findOne().sort({ commentId: -1 });
         const nextCommentId = latestComment ? latestComment.commentId + 1 : 1;
@@ -86,7 +86,7 @@ const deleteComment = async (req: Request, res: Response) => {
         if (result.deletedCount === 0) {
             return res.status(404).send('Comment not found');
         }
-        res.status(202).send({ message: `Comment ${commentId} deleted successfully` });
+        res.status(200).send({ message: `Comment ${commentId} deleted successfully` });
     } catch (error) {
         res.status(400).send(error);
     }
