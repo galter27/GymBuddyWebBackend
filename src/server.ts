@@ -2,7 +2,7 @@ import express, {Express} from "express";
 const app = express()
 import dotenv from "dotenv";
 dotenv.config();
-const bodyParser = require("body-parser");
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
 // Database Connection
@@ -11,8 +11,8 @@ mongodbConnection.on("error", (error) => console.error(error));
 mongodbConnection.once("open", () => console.log("Successfully Connected to Database"));
 
 // Require Routes
-const postRoutes = require('./routes/posts');
-const commentRoutes = require('./routes/comments');
+import postRoutes from './routes/posts';
+import commentRoutes from './routes/comments';
 
 
 // App configuration
