@@ -13,7 +13,9 @@ router.get('/:id', (req, res) => {
     commentController.getCommentById(req, res)
 });
 
-router.get('/post/:postId', commentController.getCommentsByPostId);
+router.get('/post/:postId',  (req, res) => { 
+    commentController.getCommentsByPostId(req, res)
+});
 
 router.post('/',  (req, res) => {
     commentController.createNewComment(req, res)
