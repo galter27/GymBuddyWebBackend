@@ -3,12 +3,13 @@ const appInit = require("../server");
 const mongoose = require('mongoose');
 const postsModel = require("../models/posts");
 
-const testPosts = require("./test_posts")
+const testPosts = require("./test_posts");
+const initApp = require("../server");
 let app;
 
 beforeAll(async () => {
     console.log("Before all test");
-    app = await appInit();
+    app = await initApp();
     await postsModel.deleteMany();
 });
 
