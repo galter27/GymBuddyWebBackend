@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
 
 // Database Connection
-mongoose.connect(process.env.DB_CONNECTION);
+
 const mongodbConnection = mongoose.connection;
 mongodbConnection.on("error", (error) => console.error(error));
 mongodbConnection.once("open", () => console.log("Successfully Connected to Database"));
@@ -29,4 +29,12 @@ app.get('/', (req, res) => {
 app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
 
-module.exports = app;
+const initApp = () => {
+  return new Promise(async (resolve, reject) => {
+    await mongoose.connect(process.env.DB_CONNECTION);
+    resolve(app);
+  });
+}
+
+
+module.exports = initApp;

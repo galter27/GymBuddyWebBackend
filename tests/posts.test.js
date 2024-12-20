@@ -1,13 +1,14 @@
 const request = require("supertest");
-const app = require("../server");
+const appInit = require("../server");
 const mongoose = require('mongoose');
 const postsModel = require("../models/posts");
 
 const testPosts = require("./test_posts")
-
+let app;
 
 beforeAll(async () => {
     console.log("Before all test");
+    app = await appInit();
     await postsModel.deleteMany();
 });
 
