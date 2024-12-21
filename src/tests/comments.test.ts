@@ -1,85 +1,106 @@
 import request from "supertest";
 import initApp from "../server";
-import mongoose  from "mongoose";
-import commentsModel from "../models/comments";
-import {Express} from "express";
+import mongoose from "mongoose";
+import commentsModel from "../models/comments_model";
+import { Express } from "express";
 
-
-let app:Express;
-
-const testComment = {
-    postId: 1,
-    sender: "Romi",
-    content: "Test Comment",
-} as { postId: number; sender: string; content: string; commentId?: string };
-
-const invalidComment = {
-    content: "Test Comment"
-}
-
+let app: Express;
 
 beforeAll(async () => {
-    console.log("Before all test");
-    app = await initApp();
-    await commentsModel.deleteMany();
+  app = await initApp();
+  console.log("beforeAll");
+  await commentsModel.deleteMany();
 });
 
-describe("Comments Test", () => {
-  test("Test get all comments empty", async () => {
+afterAll(async () => {
+  console.log("afterAll");
+  await mongoose.connection.close();
+});
+
+let commentId = "";
+const testComment = {
+  comment: "Test title",
+  postId: "erwtgwerbt245t4256b345",
+  owner: "Gal",
+};
+
+const invalidComment = {
+  comment: "Test title",
+};
+
+describe("Commnents test suite", () => {
+  test("Comment test get all", async () => {
     const response = await request(app).get("/comments");
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(0);
+    expect(response.body).toHaveLength(0);
   });
 
-  test("Test create new comment", async () => {
+  test("Test Addding new comment", async () => {
     const response = await request(app).post("/comments").send(testComment);
     expect(response.statusCode).toBe(201);
+    expect(response.body.comment).toBe(testComment.comment);
     expect(response.body.postId).toBe(testComment.postId);
-    expect(response.body.sender).toBe(testComment.sender);
-    expect(response.body.content).toBe(testComment.content);
-    testComment.commentId = response.body.commentId;
+    expect(response.body.owner).toBe(testComment.owner);
+    commentId = response.body._id;
   });
 
-  test("Test get all comments", async () => {
+  test("Test Addding invalid comment", async () => {
+    const response = await request(app).post("/comments").send(invalidComment);
+    expect(response.statusCode).not.toBe(201);
+  });
+
+  test("Test get all comments after adding", async () => {
     const response = await request(app).get("/comments");
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body).toHaveLength(1);
   });
 
-  test("Test get comment by comment id", async () => {
-    const response = await request(app).get("/comments/" + testComment.commentId);
+  test("Test get comment by owner", async () => {
+    const response = await request(app).get("/comments?owner=" + testComment.owner);
     expect(response.statusCode).toBe(200);
-    console.log(response.body)
-    expect(response.body.commentId).toBe(testComment.commentId);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].owner).toBe(testComment.owner);
   });
 
-  test("Test filter comments by owner", async () => {
-    const response = await request(app).get("/comments?sender=" + testComment.sender);
+  test("Test get comment by id", async () => {
+    const response = await request(app).get("/comments/" + commentId);
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body._id).toBe(commentId);
   });
 
-  test("Test get comment by postId", async () => {
-    const response = await request(app).get("/comments/post/" + testComment.postId);
+  test("Test get comment by id fail", async () => {
+    const response = await request(app).get("/comments/67447b032ce3164be7c4412d");
+    expect(response.statusCode).toBe(404);
+  });
+
+  test("Test update comment", async () => {
+    const updatedComment = { comment: "Updated Test Title" };
+    const response = await request(app).put("/comments/" + commentId).send(updatedComment);
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
+    expect(response.body.comment).toBe(updatedComment.comment);
+    expect(response.body._id).toBe(commentId);
+  });
+
+  test("Test update non-existing comment", async () => {
+    const updatedComment = { comment: "Updated Test Title" };
+    const response = await request(app).put("/comments/67447b032ce3164be7c4412d").send(updatedComment);
+    expect(response.statusCode).toBe(404);
   });
 
   test("Test delete comment", async () => {
-    const response = await request(app).delete("/comments/" + testComment.commentId);
+    const response = await request(app).delete("/comments/" + commentId);
     expect(response.statusCode).toBe(200);
-    const responseGet = await request(app).get("/comments/" + testComment.commentId);
-    expect(responseGet.statusCode).toBe(404);
+    expect(response.text).toBe("Post deleted successfully");
   });
 
-  test ("Test create new comment fail", async () => {
-    const response = await request(app).post("/comments").send(invalidComment);
-    expect(response.statusCode).toBe(400);
+  test("Test delete non-existing comment", async () => {
+    const response = await request(app).delete("/comments/67447b032ce3164be7c4412d");
+    expect(response.statusCode).toBe(404);
   });
 
-});
-
-afterAll(() => {
-    console.log("After all test");
-    mongoose.connection.close();
+  test("Test get all comments after delete", async () => {
+    const response = await request(app).get("/comments");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveLength(0);
+  });
 });

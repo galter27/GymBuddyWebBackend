@@ -11,8 +11,8 @@ mongodbConnection.on("error", (error) => console.error(error));
 mongodbConnection.once("open", () => console.log("Successfully Connected to Database"));
 
 // Require Routes
-import postRoutes from './routes/posts';
-import commentRoutes from './routes/comments';
+import postRoutes from './routes/posts_routes';
+import commentRoutes from './routes/comments_routes';
 
 
 // App configuration
