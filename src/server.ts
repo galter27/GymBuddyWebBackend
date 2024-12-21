@@ -1,16 +1,19 @@
-import express, {Express} from "express";
-const app = express()
+import express, { Express } from "express";
 import dotenv from "dotenv";
-dotenv.config();
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
 // Require Routes
 import postsRoutes from './routes/posts_routes';
 import commentsRoutes from './routes/comments_routes';
+import authRoutes from './routes/auth_routes';
+
+dotenv.config();
+
+const app = express()
 
 app.get('/', (req, res) => {
-    res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
+  res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
 })
 
 const initApp = async () => {
@@ -35,6 +38,7 @@ const initApp = async () => {
 
         app.use("/posts", postsRoutes);
         app.use("/comments", commentsRoutes);
+        app.use("/auth", authRoutes);
 
         app.get("/about", (req, res) => {
           res.send("About page");
@@ -44,7 +48,5 @@ const initApp = async () => {
     }
   });
 };
-
-
 
 export default initApp;

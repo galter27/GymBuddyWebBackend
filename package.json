@@ -4,9 +4,12 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon ./src/app.ts",
-    "start": "tsc && node ./dist/src/app.js",
-    "test": "tsc && jest --detectOpenHandles --forceExit --coverage",
-    "lint": "eslint . --ext .ts"
+    "start": "npx tsc && node ./dist/src/app.js",
+    "test": "npx tsc && jest --detectOpenHandles --forceExit --coverage",
+    "testAuth": "npx tsc && jest --detectOpenHandles --forceExit auth.test.ts",
+    "testPosts": "npx tsc && jest --detectOpenHandles --forceExit posts.test.ts",
+    "testComments": "npx tsc && jest --detectOpenHandles --forceExit comments.test.ts",
+    "lint": "npx eslint . --ext .ts"
   },
   "author": "",
   "license": "ISC",
