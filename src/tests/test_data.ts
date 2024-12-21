@@ -34,7 +34,6 @@ export const updatedComment = {
 
 
 // User data
-
 export const testUser = {
   email: "gabi@example.com",
   password: "password123"
