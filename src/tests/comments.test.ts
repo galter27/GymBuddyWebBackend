@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import commentsModel from "../models/comments_model";
 import { Express } from "express";
 
+import { testComment, invalidComment, updatedComment } from "./test_data";
+let commentId=""
+
 let app: Express;
 
 beforeAll(async () => {
@@ -16,17 +19,6 @@ afterAll(async () => {
   console.log("afterAll");
   await mongoose.connection.close();
 });
-
-let commentId = "";
-const testComment = {
-  comment: "Test title",
-  postId: "erwtgwerbt245t4256b345",
-  owner: "Gal",
-};
-
-const invalidComment = {
-  comment: "Test title",
-};
 
 describe("Commnents test suite", () => {
   test("Comment test get all", async () => {
@@ -74,7 +66,6 @@ describe("Commnents test suite", () => {
   });
 
   test("Test update comment", async () => {
-    const updatedComment = { comment: "Updated Test Title" };
     const response = await request(app).put("/comments/" + commentId).send(updatedComment);
     expect(response.statusCode).toBe(200);
     expect(response.body.comment).toBe(updatedComment.comment);
@@ -82,7 +73,6 @@ describe("Commnents test suite", () => {
   });
 
   test("Test update non-existing comment", async () => {
-    const updatedComment = { comment: "Updated Test Title" };
     const response = await request(app).put("/comments/67447b032ce3164be7c4412d").send(updatedComment);
     expect(response.statusCode).toBe(404);
   });

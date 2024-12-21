@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import postModel from "../models/posts_model";
 import { Express } from "express";
 
+import { testPost, invalidPost, updatedPost } from "./test_data";
+let postId=""
+
 let app: Express;
 
 beforeAll(async () => {
@@ -17,21 +20,6 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-var postId = "";
-const testPost = {
-  title: "Test title",
-  content: "Test content",
-  owner: "Gabi",
-};
-const invalidPost = {
-  title: "Test title",
-  content: "Test content",
-};
-const updatedPost = {
-  title: "Updated title",
-  content: "Updated content",
-  owner: "Updated owner",
-};
 
 describe("Posts test suite", () => {
   test("Post test get all posts", async () => {
