@@ -31,3 +31,11 @@ export const invalidComment = {
 export const updatedComment = {
   comment: "Updated Test Title" 
 };
+
+
+// User data
+
+export const testUser = {
+  email: "gabi@example.com",
+  password: "password123"
+}
