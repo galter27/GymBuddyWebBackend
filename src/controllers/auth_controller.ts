@@ -1,6 +1,6 @@
-import { Request, response, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import userModel from "../models/user_model";
 
 
@@ -56,6 +56,10 @@ const login = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(400).send(error);
     }
+}
+
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
 }
 
 export default {
