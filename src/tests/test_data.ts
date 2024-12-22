@@ -34,7 +34,14 @@ export const updatedComment = {
 
 
 // User data
-export const testUser = {
+type User = {
+  email: string;
+  password: string;
+  token?: string;
+  _id?: string;
+};
+
+export const testUser: User = {
   email: "gabi@example.com",
   password: "password123"
 }
