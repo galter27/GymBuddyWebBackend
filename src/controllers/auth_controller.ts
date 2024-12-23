@@ -14,6 +14,13 @@ const register = async (req: Request, res: Response) => {
         return;
     }
 
+    if (password.length < 6) {
+        res.status(400).send({
+            message: "Password must be at least 6 characters long.",
+        });
+        return;
+    }
+
     try {
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(password, salt);
@@ -58,8 +65,32 @@ const login = async (req: Request, res: Response) => {
     }
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+type Payload = {
+    _id: string;
+}
 
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const authorizationHeader = req.header('authorization');
+    const token = authorizationHeader && authorizationHeader.split(' ')[1];
+
+    if (!token) {
+        res.status(401).send("Access Denied")
+        return;
+    }
+
+    if (!process.env.TOKEN_SECRET) {
+        res.status(500).send('Server Error');
+        return;
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
+        if(err) {
+            res.status(401).send("Access Denied")
+            return;
+        }
+        req.params.userId = (payload as Payload)._id;
+        next();
+    });
 }
 
 export default {
