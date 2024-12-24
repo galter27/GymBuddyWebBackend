@@ -22,9 +22,8 @@ export const updatedPost = {
 
 // Comment data
 export const testComment = {
-  comment: "Test title",
-  postId: "erwtgwerbt245t4256b345",
-  owner: "Gal",
+  comment: "Test Comment",
+  postId: "",
 };
 
 export const invalidComment = {
@@ -32,12 +31,12 @@ export const invalidComment = {
 };
 
 export const updatedComment = {
-  comment: "Updated Test Title" 
+  comment: "Updated Test Title"
 };
 
 
 // User data
-type User = IUser & {token?: string}
+type User = IUser & { token?: string }
 
 
 export const testUser: User = {

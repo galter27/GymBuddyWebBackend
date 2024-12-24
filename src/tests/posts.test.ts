@@ -2,9 +2,9 @@ import request from "supertest";
 import initApp from "../server";
 import mongoose from "mongoose";
 import postModel from "../models/posts_model";
+import userModel from "../models/user_model";
 import { Express } from "express";
 import { testPost, invalidPost, updatedPost, testUser } from "./test_data";
-import userModel from "../models/user_model";
 
 let postId = ""
 
@@ -98,7 +98,7 @@ describe("Posts test suite", () => {
   test("Test delete post by id", async () => {
     const response = await request(app)
       .delete("/posts/" + postId)
-      .set({ authorization: "JWT " + testUser.token });    
+      .set({ authorization: "JWT " + testUser.token });
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("Post deleted successfully");
   });

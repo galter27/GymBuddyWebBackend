@@ -84,7 +84,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, payload) => {
-        if(err) {
+        if (err) {
             res.status(401).send("Access Denied")
             return;
         }
