@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user_model";
 
 
-const generateTokens = (_id: string): { accessToken: string, refreshToken: string } | null => {
+export const generateTokens = (_id: string): { accessToken: string, refreshToken: string } | null => {
     const random = Math.floor(Math.random() * 1000000);
 
     if(!process.env.TOKEN_SECRET){
@@ -152,7 +152,7 @@ const refresh = async (req: Request, res: Response) => {
     // Validate the refresh token
     const refreshToken = req.body.refreshToken;
     if (!refreshToken) {
-        res.status(400).send("Invalid Token")
+        res.status(400).send("Missing Token");
         return;
     }
     // Environment Check
@@ -171,7 +171,7 @@ const refresh = async (req: Request, res: Response) => {
         try {
             const user = await userModel.findOne({ _id: payload._id })
             if (!user) {
-                res.status(400).send("Invalid Token")
+                res.status(400).send("User Not Found");
                 return;
             }
 

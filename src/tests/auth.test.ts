@@ -11,6 +11,7 @@ import {
 } from "./test_data";
 import userModel from "../models/user_model";
 import postModel from "../models/posts_model";
+import { generateTokens } from "../controllers/auth_controller";
 
 let app: Express;
 const baseUrl = "/auth";
@@ -121,6 +122,20 @@ describe("Authentication and Authorization Test Suite", () => {
         .send(testPost);
       expect(response.statusCode).not.toBe(201);
     });
+
+    test("Create post when TOKEN_SECRET is missing from server", async () => {
+      const originalSecret = process.env.TOKEN_SECRET;
+      delete process.env.TOKEN_SECRET;
+
+      const response = await request(app)
+        .post("/posts")
+        .set({ authorization: `JWT ${testUser.accessToken}` })
+        .send(testPost);
+      expect(response.statusCode).toBe(500);
+      expect(response.text).toBe("Server Error");
+
+      process.env.TOKEN_SECRET = originalSecret;
+    });
   });
 
   describe("Token Handling", () => {
@@ -146,6 +161,60 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: testUser.refreshToken,
       });
       expect(response.statusCode).not.toBe(200);
+    });
+
+    test("Logout with invalid token", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const response = await request(app).post(`${baseUrl}/logout`).send({
+        refreshToken: testUser.refreshToken + "asdasd",
+      });
+      expect(response.statusCode).toBe(403);
+    });
+
+    test("Logout without refresh token", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const response = await request(app).post(`${baseUrl}/logout`).send({
+        refreshToken: "",
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.text).toBe("Missing Token");
+    });
+
+    test("Refresh with invalid token", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const response = await request(app).post(`${baseUrl}/refresh`).send({
+        refreshToken: testUser.refreshToken + "asdasd",
+      });
+      expect(response.statusCode).toBe(403);
+    });
+
+    test("Refresh without refresh token", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const response = await request(app).post(`${baseUrl}/refresh`).send({
+        refreshToken: "",
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.text).toBe("Missing Token");
     });
 
     test("Multiple usages of refresh token", async () => {
@@ -174,6 +243,58 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: newRefreshToken,
       });
       expect(secondInvalidResponse.statusCode).not.toBe(200);
+    });
+  });
+
+  describe("Token Generation", () => {
+    test("Should return null if TOKEN_SECRET is missing", () => {
+      const originalSecret = process.env.TOKEN_SECRET;
+      delete process.env.TOKEN_SECRET;
+
+      const tokens = generateTokens("testUserId");
+      expect(tokens).toBeNull();
+
+      process.env.TOKEN_SECRET = originalSecret;
+    });
+  });
+
+  describe("Server Errors", () => {
+    test("Logout when TOKEN_SECRET is missing from server", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const originalSecret = process.env.TOKEN_SECRET;
+      delete process.env.TOKEN_SECRET;
+
+      const response = await request(app).post(`${baseUrl}/logout`).send({
+        refreshToken: testUser.refreshToken
+      });
+      expect(response.statusCode).toBe(500);
+      expect(response.text).toBe("Server Error");
+
+      process.env.TOKEN_SECRET = originalSecret;
+    });
+
+    test("Refresh when TOKEN_SECRET is missing from server", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const originalSecret = process.env.TOKEN_SECRET;
+      delete process.env.TOKEN_SECRET;
+
+      const response = await request(app).post(`${baseUrl}/refresh`).send({
+        refreshToken: testUser.refreshToken
+      });
+      expect(response.statusCode).toBe(500);
+      expect(response.text).toBe("Server Error");
+
+      process.env.TOKEN_SECRET = originalSecret;
     });
   });
 });
