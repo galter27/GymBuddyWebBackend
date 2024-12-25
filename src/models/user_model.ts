@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface IUser {
   email: string;
   password: string;
+  refreshTokens?: string[],
   _id?: string;
 }
 
@@ -27,6 +28,10 @@ const userSchema = new mongoose.Schema<IUser>({
     required: [true, "Password is required"],
     minlength: [6, "Password must be at least 6 characters long"],
   },
+  refreshTokens: {
+    type: [String],
+    default: []
+  }
 });
 
 const userModel = mongoose.model<IUser>("users", userSchema);

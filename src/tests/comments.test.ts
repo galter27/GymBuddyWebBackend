@@ -21,14 +21,14 @@ beforeAll(async () => {
   // Register User for Testing
   await request(app).post("/auth/register").send(testUser);
   const response = await request(app).post("/auth/login").send(testUser);
-  testUser.token = response.body.token;
+  testUser.accessToken = response.body.accessToken;
   testUser._id = response.body._id;
-  expect(testUser.token).toBeDefined();
+  expect(testUser.accessToken).toBeDefined();
   expect(testUser._id).toBeDefined();
 
   // Create Post for Testing
   const response_post = await request(app).post("/posts")
-    .set({ authorization: "JWT " + testUser.token })
+    .set({ authorization: "JWT " + testUser.accessToken })
     .send(testPost);
   postId = response_post.body._id;
   testComment.postId = postId;
@@ -48,7 +48,7 @@ describe("Commnents test suite", () => {
 
   test("Test Addding new comment", async () => {
     const response = await request(app).post("/comments")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(testComment);
     expect(response.statusCode).toBe(201);
     expect(response.body.comment).toBe(testComment.comment);
@@ -59,7 +59,7 @@ describe("Commnents test suite", () => {
 
   test("Test Addding invalid comment", async () => {
     const response = await request(app).post("/comments")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidComment);
     expect(response.statusCode).not.toBe(201);
   });
@@ -90,7 +90,7 @@ describe("Commnents test suite", () => {
 
   test("Test update comment", async () => {
     const response = await request(app).put("/comments/" + commentId)
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(updatedComment);
     expect(response.statusCode).toBe(200);
     expect(response.body.comment).toBe(updatedComment.comment);
@@ -99,7 +99,7 @@ describe("Commnents test suite", () => {
 
   test("Test update non-existing comment", async () => {
     const response = await request(app).put("/comments/67447b032ce3164be7c4412d")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(updatedComment);
     expect(response.statusCode).toBe(404);
   });
@@ -107,7 +107,7 @@ describe("Commnents test suite", () => {
   test("Test delete comment", async () => {
     const response = await request(app)
       .delete("/comments/" + commentId)
-      .set({ authorization: "JWT " + testUser.token });
+      .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("Post deleted successfully");
   });
@@ -115,7 +115,7 @@ describe("Commnents test suite", () => {
   test("Test delete non-existing comment", async () => {
     const response = await request(app)
       .delete("/comments/67447b032ce3164be7c4412d")
-      .set({ authorization: "JWT " + testUser.token });
+      .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(404);
   });
 

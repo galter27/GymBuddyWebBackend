@@ -18,9 +18,9 @@ beforeAll(async () => {
   // Register User for Testing
   await request(app).post("/auth/register").send(testUser);
   const response = await request(app).post("/auth/login").send(testUser);
-  testUser.token = response.body.token;
+  testUser.accessToken = response.body.accessToken;
   testUser._id = response.body._id;
-  expect(testUser.token).toBeDefined();
+  expect(testUser.accessToken).toBeDefined();
   expect(testUser._id).toBeDefined();
 });
 
@@ -38,7 +38,7 @@ describe("Posts test suite", () => {
 
   test("Test Adding new post", async () => {
     const response = await request(app).post("/posts")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(testPost);
     expect(response.statusCode).toBe(201);
     expect(response.body.title).toBe(testPost.title);
@@ -49,7 +49,7 @@ describe("Posts test suite", () => {
 
   test("Test Adding invalid post", async () => {
     const response = await request(app).post("/posts")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidPost);
     expect(response.statusCode).not.toBe(201);
   });
@@ -80,7 +80,7 @@ describe("Posts test suite", () => {
 
   test("Test update post by id", async () => {
     const response = await request(app).put("/posts/" + postId)
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(updatedPost);
     expect(response.statusCode).toBe(200);
     expect(response.body.title).toBe(updatedPost.title);
@@ -90,7 +90,7 @@ describe("Posts test suite", () => {
 
   test("Test update post by id fail", async () => {
     const response = await request(app).put("/posts/67447b032ce3164be7c4412d")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(updatedPost);
     expect(response.statusCode).toBe(404);
   });
@@ -98,7 +98,7 @@ describe("Posts test suite", () => {
   test("Test delete post by id", async () => {
     const response = await request(app)
       .delete("/posts/" + postId)
-      .set({ authorization: "JWT " + testUser.token });
+      .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("Post deleted successfully");
   });
@@ -106,7 +106,7 @@ describe("Posts test suite", () => {
   test("Test delete post by id fail", async () => {
     const response = await request(app)
       .delete("/posts/67447b032ce3164be7c4412d")
-      .set({ authorization: "JWT " + testUser.token });
+      .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(404);
   });
 
@@ -119,7 +119,7 @@ describe("Posts test suite", () => {
   test("Test creating post with missing title", async () => {
     const invalidPostData = { content: "Content without title" };
     const response = await request(app).post("/posts")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidPostData);
     expect(response.statusCode).toBe(400);
   });
@@ -127,7 +127,7 @@ describe("Posts test suite", () => {
   test("Test creating post with unexpected field", async () => {
     const invalidPostData = { title: "Test", content: "Content", extraField: "unexpected" };
     const response = await request(app).post("/posts")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidPostData);
     expect(response.statusCode).toBe(201);
     expect(response.body.extraField).toBeUndefined();
@@ -135,7 +135,7 @@ describe("Posts test suite", () => {
 
   test("Test updating non-existent post", async () => {
     const response = await request(app).put("/posts/67447b032ce3164be7c4412d")
-      .set({ authorization: "JWT " + testUser.token })
+      .set({ authorization: "JWT " + testUser.accessToken })
       .send(updatedPost);
     expect(response.statusCode).toBe(404);
   });

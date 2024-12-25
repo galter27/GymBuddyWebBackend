@@ -36,7 +36,10 @@ export const updatedComment = {
 
 
 // User data
-type User = IUser & { token?: string }
+type User = IUser & { 
+  accessToken?: string;
+  refreshToken?: string;
+}
 
 
 export const testUser: User = {
