@@ -11,7 +11,10 @@ const postSchema = new mongoose.Schema<iPost>({
     type: String,
     required: true,
   },
-  content: String,
+  content: {
+    type: String,
+    required: true,
+  },
   owner: {
     type: String,
     required: true,

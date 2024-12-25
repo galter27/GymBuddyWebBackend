@@ -5,6 +5,7 @@ import { Express } from "express";
 import {
   testUser,
   testPost,
+  testPost2,
   invalidEmailTestUser,
   noPasswordTestUser,
   shortPasswordTestUser,
@@ -295,6 +296,40 @@ describe("Authentication and Authorization Test Suite", () => {
       expect(response.text).toBe("Server Error");
 
       process.env.TOKEN_SECRET = originalSecret;
+    });
+
+    jest.setTimeout(10000);
+    test("timeout on refresh access token", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+      expect(loginResponse.body.accessToken).toBeDefined();
+      expect(loginResponse.body.refreshToken).toBeDefined();
+      testUser.accessToken = loginResponse.body.accessToken;
+      testUser.refreshToken = loginResponse.body.refreshToken;
+  
+      // wait for 6 seconds
+      await new Promise(resolve => setTimeout(resolve, 6000));
+  
+      //try to access with expired token
+      const invalidResponse = await request(app).post("/posts").set({
+        authorization: 'JWT ' + testUser.accessToken
+      }).send(testPost);
+      expect(invalidResponse.statusCode).not.toBe(201);
+  
+      const refreshResponse = await request(app).post("/auth/refresh").send({
+        refreshToken: testUser.refreshToken
+      });
+      expect(refreshResponse.statusCode).toBe(200);
+      testUser.accessToken = refreshResponse.body.accessToken;
+      testUser.refreshToken = refreshResponse.body.refreshToken;
+  
+      const validResponse = await request(app).post("/posts").set({
+        authorization: 'JWT ' + testUser.accessToken
+      }).send(testPost);
+      expect(validResponse.statusCode).toBe(201);
     });
   });
 });

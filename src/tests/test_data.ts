@@ -9,6 +9,11 @@ export const testPost = {
   content: "Test content",
 };
 
+export const testPost2 = {
+  title: "Second Test title",
+  content: "Second Test content",
+};
+
 export const invalidPost = {
   title: "Test title2",
   content: "",
