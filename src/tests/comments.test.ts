@@ -46,7 +46,7 @@ describe("Commnents test suite", () => {
     expect(response.body).toHaveLength(0);
   });
 
-  test("Test Addding new comment", async () => {
+  test("Test Adding new comment", async () => {
     const response = await request(app).post("/comments")
       .set({ authorization: "JWT " + testUser.accessToken })
       .send(testComment);
@@ -87,6 +87,22 @@ describe("Commnents test suite", () => {
     const response = await request(app).get("/comments/67447b032ce3164be7c4412d");
     expect(response.statusCode).toBe(404);
   });
+
+  test("Test get comments by postId", async () => {
+    const response = await request(app).get("/comments/post/" + postId);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].postId).toBe(postId);
+    expect(response.body[0].comment).toBe(testComment.comment);
+  });
+  
+  test("Test get comments by postId with no comments", async () => {
+    const newPostId = new mongoose.Types.ObjectId().toString();
+  
+    const response = await request(app).get("/comments/post/" + newPostId);
+    expect(response.statusCode).toBe(404);
+    expect(response.text).toBe("No comments found for this post");
+  });  
 
   test("Test update comment", async () => {
     const response = await request(app).put("/comments/" + commentId)

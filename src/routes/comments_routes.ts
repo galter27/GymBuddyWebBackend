@@ -10,6 +10,9 @@ router.get("/", commentsController.getAll.bind(commentsController));
 // Get a comment by ID
 router.get("/:id", commentsController.getById.bind(commentsController));
 
+// Get comments by post ID
+router.get("/post/:postId", commentsController.getByPostId.bind(commentsController));
+
 // Create a new comment
 router.post("/", authMiddleware, commentsController.create.bind(commentsController));
 
