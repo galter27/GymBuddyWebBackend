@@ -15,13 +15,47 @@ const router = express.Router();
  * @swagger
  * /posts:
  *   get:
- *     summary: Get all posts
+ *     summary: Retrieve all posts, optionally filtered by owner
  *     tags: [Posts]
+ *     parameters:
+ *       - in: query
+ *         name: owner
+ *         required: false
+ *         description: The owner's id of the posts to filter by. If provided, it filters posts by owner.
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: List of all posts
- *       500:
- *         description: Internal server error
+ *         description: List of posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: "648a3d2f12c8c9e3f4b12345"
+ *                   title:
+ *                     type: string
+ *                     example: "Post Title"
+ *                   content:
+ *                     type: string
+ *                     example: "Post Content"
+ *                   owner:
+ *                     type: string
+ *                     example: "676e9654813376525e018747"
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid query parameters."
  */
 router.get("/", postsController.getAll.bind(postsController));
 
@@ -40,11 +74,44 @@ router.get("/", postsController.getAll.bind(postsController));
  *           type: string
  *     responses:
  *       200:
- *         description: The post was found
+ *         description: The post was found and returned
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: "648a3d2f12c8c9e3f4b12345"
+ *                 title:
+ *                   type: string
+ *                   example: "Post Title"
+ *                 content:
+ *                   type: string
+ *                   example: "Post Content"
+ *                 owner:
+ *                   type: string
+ *                   example: "676e9654813376525e018747"
+ *       400:
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid query parameters."
  *       404:
  *         description: Post not found
- *       500:
- *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Object not found"
  */
 router.get("/:id", postsController.getById.bind(postsController));
 
@@ -55,7 +122,7 @@ router.get("/:id", postsController.getById.bind(postsController));
  *     summary: Create a new post
  *     tags: [Posts]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       description: Post data to be created
  *       required: true
@@ -69,17 +136,42 @@ router.get("/:id", postsController.getById.bind(postsController));
  *             properties:
  *               title:
  *                 type: string
- *                 example: "My First Post"
+ *                 example: "Post Title"
  *               content:
  *                 type: string
- *                 example: "This is the content of the post."
+ *                 example: "Post Content"
  *     responses:
  *       201:
  *         description: Post created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: "648a3d2f12c8c9e3f4b12345"
+ *                 title:
+ *                   type: string
+ *                   example: "Post Title"
+ *                 content:
+ *                   type: string
+ *                   example: "Post Content"
+ *                 owner:
+ *                   type: string
+ *                   example: "676e9654813376525e018747"
  *       400:
- *         description: Invalid input
+ *         description: Invalid inputs
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Access Denied"
  *       500:
  *         description: Internal server error
  */
@@ -92,7 +184,7 @@ router.post("/", authMiddleware, postsController.create.bind(postsController));
  *     summary: Update an existing post by ID
  *     tags: [Posts]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []  # Ensure this corresponds to your actual authentication method
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,12 +209,45 @@ router.post("/", authMiddleware, postsController.create.bind(postsController));
  *     responses:
  *       200:
  *         description: Post updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   example: "648a3d2f12c8c9e3f4b12345"
+ *                 title:
+ *                   type: string
+ *                   example: "Updated Post Title"
+ *                 content:
+ *                   type: string
+ *                   example: "Updated content of the post."
+ *                 owner:
+ *                   type: string
+ *                   example: "676e9654813376525e018747"
  *       400:
  *         description: Invalid input
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Access Denied"
  *       404:
  *         description: Post not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Object not found"
  *       500:
  *         description: Internal server error
  */
@@ -135,7 +260,7 @@ router.put("/:id", authMiddleware, postsController.update.bind(postsController))
  *     summary: Delete a post by ID
  *     tags: [Posts]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []  # Ensure this corresponds to your actual authentication method
  *     parameters:
  *       - in: path
  *         name: id
@@ -146,10 +271,36 @@ router.put("/:id", authMiddleware, postsController.update.bind(postsController))
  *     responses:
  *       200:
  *         description: Post deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Object deleted successfully"
+ *       400:
+ *         description: Invalid request
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Access Denied"
  *       404:
  *         description: Post not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Object not found"
  *       500:
  *         description: Internal server error
  */

@@ -125,7 +125,7 @@ describe("Commnents test suite", () => {
       .delete("/comments/" + commentId)
       .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe("Post deleted successfully");
+    expect(response.text).toBe("Object deleted successfully");
   });
 
   test("Test delete non-existing comment", async () => {

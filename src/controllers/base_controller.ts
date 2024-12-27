@@ -26,12 +26,12 @@ export class BaseController<T> {
   async getById(req: Request, res: Response) {
     const id = req.params.id;
     try {
-      const post = await this.model.findById(id);
-      if (post === null) {
-        res.status(404).send("Post not found");
+      const object = await this.model.findById(id);
+      if (object === null) {
+        res.status(404).send("Object not found");
         return;
       }
-      res.status(200).send(post);
+      res.status(200).send(object);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -39,8 +39,8 @@ export class BaseController<T> {
 
   async create(req: Request, res: Response) {
     try {
-      const post = await this.model.create(req.body);
-      res.status(201).send(post);
+      const object = await this.model.create(req.body);
+      res.status(201).send(object);
     } catch (err) {
       res.status(400).send(err);
     }
@@ -50,12 +50,12 @@ export class BaseController<T> {
     const id = req.params.id;
     const updateData = req.body;
     try {
-      const updatedPost = await this.model.findByIdAndUpdate(id, updateData, { new: true });
-      if (updatedPost === null) {
-        res.status(404).send("Post not found");
+      const updatedObject = await this.model.findByIdAndUpdate(id, updateData, { new: true });
+      if (updatedObject === null) {
+        res.status(404).send("Object not found");
         return;
       } else {
-        res.status(200).send(updatedPost);
+        res.status(200).send(updatedObject);
       }
     } catch (err) {
       res.status(400).send(err);
@@ -65,12 +65,12 @@ export class BaseController<T> {
   async delete(req: Request, res: Response) {
     const id = req.params.id;
     try {
-      const deletedPost = await this.model.findByIdAndDelete(id);
-      if (deletedPost === null) {
-        res.status(404).send("Post not found");
+      const deletedObject = await this.model.findByIdAndDelete(id);
+      if (deletedObject === null) {
+        res.status(404).send("Object not found");
         return;
       } else {
-        res.status(200).send("Post deleted successfully");
+        res.status(200).send("Object deleted successfully");
       }
     } catch (err) {
       res.status(400).send(err);

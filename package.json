@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon ./src/app.ts",
-    "start": "npx tsc && node ./dist/src/app.js",
-    "test": "npx tsc && jest --detectOpenHandles --forceExit --coverage --runInBand",
-    "testAuth": "npx tsc && jest --detectOpenHandles --forceExit auth.test.ts",
-    "testPosts": "npx tsc && jest --detectOpenHandles --forceExit posts.test.ts",
-    "testComments": "npx tsc && jest --detectOpenHandles --forceExit comments.test.ts",
+    "dev": "cp .env.dev .env && nodemon ./src/app.ts",
+    "start": "cp .env.dev .env && npx tsc && node ./dist/src/app.js",
+    "test": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit --coverage --runInBand",
+    "testAuth": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit auth.test.ts",
+    "testPosts": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit posts.test.ts",
+    "testComments": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit comments.test.ts",
     "lint": "npx eslint . --ext .ts"
   },
   "author": "",

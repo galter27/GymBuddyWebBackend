@@ -14,7 +14,7 @@ const router = express.Router();
  * @swagger
  * components:
  *   securitySchemes:
- *     bearerToken:
+ *     bearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
