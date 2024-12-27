@@ -184,7 +184,7 @@ router.post("/", authMiddleware, postsController.create.bind(postsController));
  *     summary: Update an existing post by ID
  *     tags: [Posts]
  *     security:
- *       - bearerAuth: []  # Ensure this corresponds to your actual authentication method
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -260,7 +260,7 @@ router.put("/:id", authMiddleware, postsController.update.bind(postsController))
  *     summary: Delete a post by ID
  *     tags: [Posts]
  *     security:
- *       - bearerAuth: []  # Ensure this corresponds to your actual authentication method
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
