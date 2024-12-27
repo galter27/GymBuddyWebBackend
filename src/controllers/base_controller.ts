@@ -41,7 +41,7 @@ export class BaseController<T> {
     try {
       const post = await this.model.create(req.body);
       res.status(201).send(post);
-    } catch (err: any) {
+    } catch (err) {
       res.status(400).send(err);
     }
   }
