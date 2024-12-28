@@ -7,7 +7,7 @@ import userModel from "../models/user_model";
 export const generateTokens = (_id: string): { accessToken: string, refreshToken: string } | null => {
     const random = Math.floor(Math.random() * 1000000);
 
-    if(!process.env.TOKEN_SECRET){
+    if (!process.env.TOKEN_SECRET) {
         return null;
     }
 
@@ -36,6 +36,14 @@ const register = async (req: Request, res: Response) => {
         });
         return;
     }
+
+    if (await userModel.findOne({ email })) {
+        res.status(400).send({
+            message: "Email already exists.",
+        });
+        return;
+    }
+
 
     if (password.length < 6) {
         res.status(400).send({
@@ -163,7 +171,7 @@ const refresh = async (req: Request, res: Response) => {
 
     jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: any, data: any) => {
         if (err) {
-            res.status(403).send("Invalid Token")
+            res.status(403).send("Token expired or invalid")
             return;
         }
         // Find User 
@@ -185,7 +193,7 @@ const refresh = async (req: Request, res: Response) => {
 
             // Generate Tokens
             const newTokens = generateTokens(user.id.toString());
-            if(!newTokens) {
+            if (!newTokens) {
                 user.refreshTokens = [];
                 await user.save();
                 res.status(400).send("Missing Configuration")
@@ -196,7 +204,7 @@ const refresh = async (req: Request, res: Response) => {
             user.refreshTokens = user.refreshTokens.filter((token) => token !== refreshToken);
             user.refreshTokens.push(newTokens.refreshToken);
             await user.save();
-            
+
             res.status(200).send({
                 refreshToken: newTokens.refreshToken,
                 accessToken: newTokens.accessToken,
@@ -229,7 +237,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, data) => {
         if (err) {
-            res.status(401).send("Access Denied")
+            res.status(401).send("Access Deniedasdasd")
             return;
         }
         req.params.userId = (data as TokenPayload)._id;

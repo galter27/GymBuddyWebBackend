@@ -62,6 +62,18 @@ describe("Commnents test suite", () => {
       .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidComment);
     expect(response.statusCode).not.toBe(201);
+    expect(response.body.message).toBe("postId is required");
+  });
+
+  test("Test Addding invalid comment with invalid postId", async () => {
+    const response = await request(app).post("/comments")
+      .set({ authorization: "JWT " + testUser.accessToken })
+      .send({
+        comment: invalidComment.comment, 
+        postId: "670fe22b3e1c48f5a134432f"
+      });
+    expect(response.statusCode).toBe(404);
+    expect(response.body.message).toBe("Post not found");
   });
 
   test("Test get all comments after adding", async () => {
@@ -125,7 +137,7 @@ describe("Commnents test suite", () => {
       .delete("/comments/" + commentId)
       .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe("Post deleted successfully");
+    expect(response.text).toBe("Object deleted successfully");
   });
 
   test("Test delete non-existing comment", async () => {

@@ -12,6 +12,38 @@ const router = express.Router();
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: The user email
+ *         password:
+ *           type: string
+ *           description: The user password
+ *       example:
+ *         email: 'gabi@gmail.com'
+ *         password: 'password123'
+ */
+
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     summary: Register a new user
@@ -22,20 +54,14 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *                 example: testUser
- *               password:
- *                 type: string
- *                 example: testPassword123
+ *             $ref: '#/components/schemas/User'
  *     responses:
- *       201:
+ *       200:
  *         description: User registered successfully
+ *         content:
+ *            application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid input data
  *       500:
@@ -50,22 +76,12 @@ router.post("/register", authController.register);
  *     summary: Login an existing user
  *     tags: [Authentication]
  *     requestBody:
- *       description: User login details (username and password)
+ *       description: User login details (email and password)
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *                 example: testUser
- *               password:
- *                 type: string
- *                 example: testPassword123
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -76,7 +92,10 @@ router.post("/register", authController.register);
  *               properties:
  *                 accessToken:
  *                   type: string
- *                   example: jwt_token_example
+ *                 refreshToken:
+ *                   type: string
+ *                 _id:
+ *                   type: string
  *       400:
  *         description: Invalid credentials
  *       500:
@@ -90,11 +109,24 @@ router.post("/login", authController.login);
  *   post:
  *     summary: Logout the current user
  *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json: 
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *             required:
+ *               - refreshToken
  *     responses:
  *       200:
  *         description: User logged out successfully
- *       401:
- *         description: Unauthorized
+ *       400:
+ *         description: Bad Request
+ *       403:
+ *         description: Invalid Token
  *       500:
  *         description: Internal server error
  */
@@ -118,7 +150,6 @@ router.post("/logout", authController.logout);
  *             properties:
  *               refreshToken:
  *                 type: string
- *                 example: refresh_token_example
  *     responses:
  *       200:
  *         description: Access token refreshed successfully
@@ -127,11 +158,16 @@ router.post("/logout", authController.logout);
  *             schema:
  *               type: object
  *               properties:
+ *                 refreshToken:
+ *                   type: string
  *                 accessToken:
  *                   type: string
- *                   example: new_jwt_token_example
+ *                 _id:
+ *                   type: string
  *       400:
  *         description: Invalid refresh token
+ *       403:
+ *         description: Token expired or invalid
  *       500:
  *         description: Internal server error
  */

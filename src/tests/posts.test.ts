@@ -100,7 +100,7 @@ describe("Posts test suite", () => {
       .delete("/posts/" + postId)
       .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe("Post deleted successfully");
+    expect(response.text).toBe("Object deleted successfully");
   });
 
   test("Test delete post by id fail", async () => {
