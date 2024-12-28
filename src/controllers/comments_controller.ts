@@ -1,4 +1,5 @@
 import commentsModel, { iComment } from "../models/comments_model";
+import postModel from "../models/posts_model";
 import { Request, Response } from "express";
 import { BaseController } from "./base_controller";
 
@@ -8,13 +9,25 @@ class CommentController extends BaseController<iComment> {
     }
 
     async create(req: Request, res: Response) {
-        const userId = req.params.userId;
-        const comment = {
-            ...req.body,
-            owner: userId
+        // Extract postId from route parameters
+        const postId = req.body.postId; 
+
+        if (!postId) {
+            res.status(400).send({ message: "postId is required" });
+            return;
         }
-        req.body = comment;
-        super.create(req, res);
+
+        if (await postModel.findOne({ _id: postId })) {
+            const userId = req.params.userId;
+            const comment = {
+                ...req.body,
+                owner: userId
+            }
+            req.body = comment;
+            super.create(req, res);
+        } else {
+            res.status(404).send({ message: "Post not found" });
+        }
     }
 
     async getByPostId(req: Request, res: Response) {

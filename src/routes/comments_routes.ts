@@ -230,6 +230,16 @@ router.get("/post/:postId", commentsController.getByPostId.bind(commentsControll
  *                 message:
  *                   type: string
  *                   example: "Access Denied"
+ *       404:
+ *         description: PostID not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Post not found"
  *       500:
  *         description: Internal server error
  */
