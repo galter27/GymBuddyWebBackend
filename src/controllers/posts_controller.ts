@@ -1,4 +1,5 @@
 import postModel, { iPost } from "../models/posts_model";
+import commentsModel from "../models/comments_model";
 import { Request, Response } from "express";
 import { BaseController } from "./base_controller";
 
@@ -7,7 +8,7 @@ class PostController extends BaseController<iPost> {
         super(postModel);
     }
 
-    async create(req: Request, res: Response){
+    async create(req: Request, res: Response) {
         const userId = req.params.userId;
         const post = {
             ...req.body,
@@ -15,6 +16,12 @@ class PostController extends BaseController<iPost> {
         }
         req.body = post;
         super.create(req, res);
+    }
+
+    async delete(req: Request, res: Response) {
+        const postId = req.params.id;
+        await commentsModel.deleteMany({ postId });
+        super.delete(req, res);
     }
 }
 
