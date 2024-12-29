@@ -49,7 +49,7 @@ const initApp = async () => {
     });
 
     if (process.env.MONGO_URI === undefined) {
-      console.error("MONGO_URI is not set");
+      //console.error("MONGO_URI is not set");
       reject();
     } else {
       mongoose.connect(process.env.MONGO_URI).then(() => {
