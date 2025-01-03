@@ -37,10 +37,10 @@ npm install
 Execute the provided test scripts to ensure the application is functioning as expected:
 
 ```bash
-npm run test         # Runs all tests with coverage report
-npm run testAuth     # Tests authentication APIs (/auth)
-npm run testPosts    # Tests posts APIs (/posts)
-npm run testComments # Tests comments APIs (/comments)
+npm run test          # Runs all tests with coverage report
+npm run testAuth      # Tests authentication APIs (/auth)
+npm run testPosts     # Tests posts APIs (/posts)
+npm run testComments  # Tests comments APIs (/comments)
 ```
 
 ### Start the Server
@@ -48,8 +48,8 @@ npm run testComments # Tests comments APIs (/comments)
 Start the server using one of the following commands:
 
 ```bash
-npm run dev   # Start the server with nodemon (automatic restarts)
-npm run start # Start the server without nodemon
+npm run dev    # Start the server with nodemon (automatic restarts)
+npm run start  # Start the server without nodemon
 ```
 
 ---
@@ -67,4 +67,3 @@ To interact with the APIs via Swagger:
 ---
 
 For more details, refer to the `requests.rest` file or the Swagger documentation.
-```
