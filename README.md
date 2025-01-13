@@ -1,4 +1,4 @@
-Here’s the full file formatted properly for a README.md template:
+PostsApp:
 
 ```markdown
 # Posts Application
