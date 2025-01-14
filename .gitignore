@@ -13,7 +13,7 @@ pids
 
 # Directory for local data
 /.env
-.env.*
+#.env.*
 
 # Optional npm cache directory
 .npm
