@@ -9,13 +9,22 @@ import swaggerUI from "swagger-ui-express";
 import postsRoutes from './routes/posts_routes';
 import commentsRoutes from './routes/comments_routes';
 import authRoutes from './routes/auth_routes';
+import fileRoutes from './routes/files_routes';
 
 const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+})
+app.use('/public', express.static('public'));
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/auth", authRoutes);
+app.use("/file", fileRoutes)
 
 dotenv.config();
 
