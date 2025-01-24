@@ -21,6 +21,7 @@ app.use((req, res, next) => {
   next();
 })
 app.use('/public', express.static('public'));
+app.use('/storage', express.static('storage'));
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/auth", authRoutes);

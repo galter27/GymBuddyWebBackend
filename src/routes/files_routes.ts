@@ -8,7 +8,7 @@ const base = process.env.DOMAIN_BASE || 'http://localhost:3000';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/');
+        cb(null, 'storage/');
     },
     filename: function (req, file, cb) {
         const ext = file.originalname.split('.')
@@ -28,7 +28,7 @@ router.post('/', upload.single("file"), function (req, res) {
         return;
     }
 
-    const fileUrl = `${base}/public/${req.file.filename}`;
+    const fileUrl = `${base}/storage/${req.file.filename}`;
     console.log(`File uploaded: ${fileUrl}`);
 
     res.status(200).send({ url: fileUrl });
