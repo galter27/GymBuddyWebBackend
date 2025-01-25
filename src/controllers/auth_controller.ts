@@ -55,9 +55,14 @@ const register = async (req: Request, res: Response) => {
     try {
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(password, salt);
+        if(!req.body.avatar) {
+            req.body.avatar = null;   
+        }
         const user = await userModel.create({
+            name: req.body.name,
             email: req.body.email,
-            password: hashPassword
+            password: hashPassword,
+            avatar: req.body.avatar
         });
         res.status(200).send(user);
     } catch (error) {
