@@ -1,4 +1,5 @@
 import express from "express";
+import { body } from "express-validator";
 import authController from "../controllers/auth_controller";
 
 const router = express.Router();
@@ -172,5 +173,19 @@ router.post("/logout", authController.logout);
  *         description: Internal server error
  */
 router.post("/refresh", authController.refresh);
+
+
+router.put(
+    "/user/:userId",
+    [
+        body("name").optional().isString().withMessage("Name must be a string."),
+        body("email").optional().isEmail().withMessage("Email must be valid."),
+        body("password").optional().isString().withMessage("Password must be a string.")
+            .isLength({ min: 6 })
+            .withMessage("Password must be at least 6 characters long."),
+        body("avatar").optional().isString().withMessage("Avatar must be a string."),
+    ],
+    authController.updateUser
+);
 
 export default router;
