@@ -175,8 +175,7 @@ router.post("/logout", authController.logout);
 router.post("/refresh", authController.refresh);
 
 
-router.put(
-    "/user/:userId",
+router.put("/user/:userId",
     [
         body("name").optional().isString().withMessage("Name must be a string."),
         body("email").optional().isEmail().withMessage("Email must be valid."),
