@@ -76,7 +76,7 @@ describe("Authentication and Authorization Test Suite", () => {
         password: testUser.password,
       });
       expect(response.statusCode).toBe(400);
-      expect(response.text).toBe("Invalid Username or Password");
+      expect(response.body.message).toBe("Invalid Username or Password");
     });
 
     test("Invalid password", async () => {
@@ -85,7 +85,7 @@ describe("Authentication and Authorization Test Suite", () => {
         password: testUser.password + "m",
       });
       expect(response.statusCode).toBe(400);
-      expect(response.text).toBe("Invalid Username or Password");
+      expect(response.body.message).toBe("Invalid Username or Password");
     });
 
     test("Different access tokens for multiple logins", async () => {
@@ -133,7 +133,7 @@ describe("Authentication and Authorization Test Suite", () => {
         .set({ authorization: `JWT ${testUser.accessToken}` })
         .send(testPost);
       expect(response.statusCode).toBe(500);
-      expect(response.text).toBe("Server Error");
+      expect(response.body.message).toBe("Server Error");
 
       process.env.TOKEN_SECRET = originalSecret;
     });
@@ -188,7 +188,7 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: "",
       });
       expect(response.statusCode).toBe(400);
-      expect(response.text).toBe("Missing Token");
+      expect(response.body.message).toBe("Missing Token");
     });
 
     test("Refresh with invalid token", async () => {
@@ -215,7 +215,7 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: "",
       });
       expect(response.statusCode).toBe(400);
-      expect(response.text).toBe("Missing Token");
+      expect(response.body.message).toBe("Missing Token");
     });
 
     test("Multiple usages of refresh token", async () => {
@@ -274,7 +274,7 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: testUser.refreshToken
       });
       expect(response.statusCode).toBe(500);
-      expect(response.text).toBe("Server Error");
+      expect(response.body.message).toBe("Server Error");
 
       process.env.TOKEN_SECRET = originalSecret;
     });
@@ -293,13 +293,13 @@ describe("Authentication and Authorization Test Suite", () => {
         refreshToken: testUser.refreshToken
       });
       expect(response.statusCode).toBe(500);
-      expect(response.text).toBe("Server Error");
+      expect(response.body.message).toBe("Server Error");
 
       process.env.TOKEN_SECRET = originalSecret;
     });
 
     jest.setTimeout(10000);
-    test("timeout on refresh access token", async () => {
+    test("Timeout on refresh access token", async () => {
       const loginResponse = await request(app).post(`${baseUrl}/login`).send({
         email: testUser.email,
         password: testUser.password,
@@ -309,23 +309,23 @@ describe("Authentication and Authorization Test Suite", () => {
       expect(loginResponse.body.refreshToken).toBeDefined();
       testUser.accessToken = loginResponse.body.accessToken;
       testUser.refreshToken = loginResponse.body.refreshToken;
-  
+
       // wait for 6 seconds
       await new Promise(resolve => setTimeout(resolve, 6000));
-  
+
       //try to access with expired token
       const invalidResponse = await request(app).post("/posts").set({
         authorization: 'JWT ' + testUser.accessToken
       }).send(testPost);
       expect(invalidResponse.statusCode).not.toBe(201);
-  
+
       const refreshResponse = await request(app).post("/auth/refresh").send({
         refreshToken: testUser.refreshToken
       });
       expect(refreshResponse.statusCode).toBe(200);
       testUser.accessToken = refreshResponse.body.accessToken;
       testUser.refreshToken = refreshResponse.body.refreshToken;
-  
+
       const validResponse = await request(app).post("/posts").set({
         authorization: 'JWT ' + testUser.accessToken
       }).send(testPost);
