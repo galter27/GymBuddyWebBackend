@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
 export interface iPost {
-  title: string,
-  content: string,
-  owner: string,
+  title: string;
+  content: string;
+  owner: string;
+  image?: string; // Optional field for the image URL
 }
 
 const postSchema = new mongoose.Schema<iPost>({
@@ -18,6 +19,10 @@ const postSchema = new mongoose.Schema<iPost>({
   owner: {
     type: String,
     required: true,
+  },
+  image: {
+    type: String, // URL or path to the image
+    required: false, // Optional field
   },
 });
 
