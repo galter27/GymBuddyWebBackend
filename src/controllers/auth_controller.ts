@@ -67,19 +67,19 @@ const login = async (req: Request, res: Response) => {
     try {
         const user = await userModel.findOne({ email: req.body.email });
         if (!user) {
-            res.status(400).send("Invalid Username or Password");
+            res.status(400).send({ message: "Invalid Username or Password" });
             return;
         }
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
-            res.status(400).send("Invalid Username or Password");
+            res.status(400).send({ message: "Invalid Username or Password" });
             return;
         }
 
         const tokens = generateTokens(user._id.toString());
         if (!tokens) {
-            res.status(400).send("Missing Configuration");
+            res.status(400).send({ message: "Missing Configuration" });
             return;
         }
 
@@ -103,18 +103,18 @@ const login = async (req: Request, res: Response) => {
 const logout = async (req: Request, res: Response) => {
     const refreshToken = req.body.refreshToken;
     if (!refreshToken) {
-        res.status(400).send("Missing Token");
+        res.status(400).send({ message: "Missing Token" });
         return;
     }
 
     if (!process.env.TOKEN_SECRET) {
-        res.status(500).send("Server Error");
+        res.status(500).send({ message: "Server Error" });
         return;
     }
 
     jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: any, data: any) => {
         if (err) {
-            res.status(403).send("Invalid Token");
+            res.status(403).send({ message: "Invalid Token" });
             return;
         }
 
@@ -122,22 +122,22 @@ const logout = async (req: Request, res: Response) => {
         try {
             const user = await userModel.findOne({ _id: payload._id });
             if (!user) {
-                res.status(400).send("User Not Found");
+                res.status(400).send({ message: "User Not Found" });
                 return;
             }
 
             if (!user.refreshTokens || !user.refreshTokens.includes(refreshToken)) {
                 user.refreshTokens = [];
                 await user.save();
-                res.status(400).send("Invalid Token");
+                res.status(400).send({ message: "Invalid Token" });
                 return;
             }
 
             user.refreshTokens = user.refreshTokens.filter((token) => token !== refreshToken);
             await user.save();
-            res.status(200).send("Logged Out");
+            res.status(200).send({ message: "Logged Out" });
         } catch (error) {
-            res.status(400).send("Invalid Token");
+            res.status(400).send({ message: "Invalid Token" });
         }
     });
 };
@@ -146,18 +146,18 @@ const logout = async (req: Request, res: Response) => {
 const refresh = async (req: Request, res: Response) => {
     const refreshToken = req.body.refreshToken;
     if (!refreshToken) {
-        res.status(400).send("Missing Token");
+        res.status(400).send({ message: "Missing Token" });
         return;
     }
 
     if (!process.env.TOKEN_SECRET) {
-        res.status(500).send("Server Error");
+        res.status(500).send({ message: "Server Error" });
         return;
     }
 
     jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: any, data: any) => {
         if (err) {
-            res.status(403).send("Token expired or invalid");
+            res.status(403).send({ message: "Token expired or invalid" });
             return;
         }
 
@@ -165,14 +165,14 @@ const refresh = async (req: Request, res: Response) => {
         try {
             const user = await userModel.findOne({ _id: payload._id });
             if (!user) {
-                res.status(400).send("User Not Found");
+                res.status(400).send({ message: "User Not Found" });
                 return;
             }
 
             if (!user.refreshTokens || !user.refreshTokens.includes(refreshToken)) {
                 user.refreshTokens = [];
                 await user.save();
-                res.status(400).send("Invalid Token");
+                res.status(400).send({ message: "Invalid Token" });
                 return;
             }
 
@@ -180,7 +180,7 @@ const refresh = async (req: Request, res: Response) => {
             if (!newTokens) {
                 user.refreshTokens = [];
                 await user.save();
-                res.status(400).send("Missing Configuration");
+                res.status(400).send({ message: "Missing Configuration" });
                 return;
             }
 
@@ -194,7 +194,7 @@ const refresh = async (req: Request, res: Response) => {
                 _id: user._id,
             });
         } catch (error) {
-            res.status(400).send("Invalid Token");
+            res.status(400).send({ message: "Invalid Token" });
         }
     });
 };
@@ -232,18 +232,18 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
 
     if (!accessToken) {
-        res.status(401).send("Access Denied");
+        res.status(401).send({ message: "Access Denied" });
         return;
     }
 
     if (!process.env.TOKEN_SECRET) {
-        res.status(500).send("Server Error");
+        res.status(500).send({ message: "Server Error" });
         return;
     }
 
     jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, data) => {
         if (err) {
-            res.status(401).send("Access Denied");
+            res.status(401).send({ message: "Access Denied" });
             return;
         }
         req.params.userId = (data as TokenPayload)._id;
