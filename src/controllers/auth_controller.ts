@@ -27,15 +27,20 @@ export const generateTokens = (_id: string): { accessToken: string, refreshToken
 
 // Register User
 const register = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !username) {
         res.status(400).send({ message: "Email and password are required." });
         return;
     }
 
     if (await userModel.findOne({ email })) {
         res.status(400).send({ message: "Email already exists." });
+        return;
+    }
+
+    if (await userModel.findOne({ username })) {
+        res.status(400).send({ message: "Username already taken." });
         return;
     }
 
@@ -51,7 +56,7 @@ const register = async (req: Request, res: Response) => {
             req.body.avatar = null;
         }
         const user = await userModel.create({
-            name: req.body.name,
+            username: req.body.username,
             email: req.body.email,
             password: hashPassword,
             avatar: req.body.avatar,
@@ -93,6 +98,8 @@ const login = async (req: Request, res: Response) => {
             refreshToken: tokens.refreshToken,
             accessToken: tokens.accessToken,
             _id: user._id,
+            username: user.username,
+            email: user.email,
         });
     } catch (error) {
         res.status(400).send(error);
@@ -202,7 +209,7 @@ const refresh = async (req: Request, res: Response) => {
 // Update User
 const updateUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const { name, email, password, avatar } = req.body;
+    const { username, email, password, avatar } = req.body;
 
     try {
         const user = await userModel.findById(userId);
@@ -211,7 +218,7 @@ const updateUser = async (req: Request, res: Response) => {
             return;
         }
 
-        if (name) user.name = name;
+        if (username) user.username = username;
         if (email) user.email = email;
         if (password) user.password = await bcrypt.hash(password, await bcrypt.genSalt());
         if (avatar) user.avatar = avatar;

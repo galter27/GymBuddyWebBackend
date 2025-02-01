@@ -48,25 +48,25 @@ type User = IUser & {
 
 
 export const testUser: User = {
-  name: "Gabi",
+  username: "Gabi17",
   email: "gabi@example.com",
   password: "password123"
 }
 
 export const invalidEmailTestUser: User = {
-  name: "Gabi",
+  username: "Gabi18",
   email: "gabi@example",
   password: "password123"
 }
 
 export const noPasswordTestUser: User = {
-  name: "Gal",
+  username: "Gal12",
   email: "gal@example.com",
   password: ""
 }
 
 export const shortPasswordTestUser: User = {
-  name: "Gal",
+  username: "Gal11",
   email: "gal@example.com",
   password: "123"
 }
