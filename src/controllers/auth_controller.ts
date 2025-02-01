@@ -100,6 +100,7 @@ const login = async (req: Request, res: Response) => {
             _id: user._id,
             username: user.username,
             email: user.email,
+            avatar: user.avatar,
         });
     } catch (error) {
         res.status(400).send(error);
