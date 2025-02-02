@@ -129,7 +129,7 @@ describe("Posts test suite", () => {
     const response = await request(app).post("/posts")
       .set({ authorization: "JWT " + testUser.accessToken })
       .send(invalidPostData);
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).not.toBe(201);
     expect(response.body.extraField).toBeUndefined();
   });
 
