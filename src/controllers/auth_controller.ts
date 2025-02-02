@@ -210,7 +210,7 @@ const refresh = async (req: Request, res: Response) => {
 // Update User
 const updateUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const { username, email, password, avatar } = req.body;
+    const { username, avatar } = req.body;
 
     try {
         const user = await userModel.findById(userId);
@@ -219,12 +219,17 @@ const updateUser = async (req: Request, res: Response) => {
             return;
         }
 
+        const userUsername = await userModel.findOne({ username: username });
+        if (userUsername) {
+            res.status(401).send({ message: "Username already taken" });
+            return;
+        }
+
         if (username) user.username = username;
-        if (email) user.email = email;
-        if (password) user.password = await bcrypt.hash(password, await bcrypt.genSalt());
         if (avatar) user.avatar = avatar;
 
         const updatedUser = await user.save();
+        console.log('User updated');
         res.status(200).send(updatedUser);
     } catch (error) {
         res.status(500).send({ message: "Server error", error });
@@ -272,9 +277,12 @@ type TokenPayload = {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = req.header("authorization");
     const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
+    console.log(accessToken);
+    
 
     if (!accessToken) {
         res.status(401).send({ message: "Access Denied" });
+        console.log("Faild");
         return;
     }
 

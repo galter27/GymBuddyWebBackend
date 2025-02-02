@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
+import cors from "cors";
 
 // Require Routes
 import postsRoutes from './routes/posts_routes';
@@ -11,9 +12,17 @@ import commentsRoutes from './routes/comments_routes';
 import authRoutes from './routes/auth_routes';
 import fileRoutes from './routes/files_routes';
 
+// CORS Configuration to allow specific origin
+const corsOptions = {
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 const app = express()
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// Enable CORS
+app.use(cors(corsOptions));
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
