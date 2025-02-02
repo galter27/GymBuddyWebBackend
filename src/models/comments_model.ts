@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
 export interface iComment {
-  comment: string,
-  postId: string,
-  owner: string,
+  comment: string;
+  postId: string;
+  owner: string;
+  username: string;
 }
 
 const commentsSchema = new mongoose.Schema<iComment>({
@@ -16,6 +17,10 @@ const commentsSchema = new mongoose.Schema<iComment>({
     required: true,
   },
   owner: {
+    type: String,
+    required: true,
+  },
+  username: {
     type: String,
     required: true,
   },

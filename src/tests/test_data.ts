@@ -5,11 +5,13 @@ import { iComment } from "../models/comments_model";
 import { IUser } from "../models/user_model";
 
 export const testPost = {
+  username: "Gabi17",
   title: "Test title",
   content: "Test content",
 };
 
 export const testPost2 = {
+  username: "Gabi17",
   title: "Second Test title",
   content: "Second Test content",
 };
@@ -20,6 +22,7 @@ export const invalidPost = {
 };
 
 export const updatedPost = {
+  username: "Gabi17",
   title: "Updated title",
   content: "Updated content",
 };
@@ -27,6 +30,7 @@ export const updatedPost = {
 
 // Comment data
 export const testComment = {
+  username: "Gabi3",
   comment: "Test Comment",
   postId: "",
 };
@@ -36,6 +40,7 @@ export const invalidComment = {
 };
 
 export const updatedComment = {
+  username: "Gabi3",
   comment: "Updated Test Title"
 };
 

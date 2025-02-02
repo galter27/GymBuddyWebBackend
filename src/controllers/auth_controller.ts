@@ -277,8 +277,6 @@ type TokenPayload = {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = req.header("authorization");
     const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
-    console.log(accessToken);
-    
 
     if (!accessToken) {
         res.status(401).send({ message: "Access Denied" });

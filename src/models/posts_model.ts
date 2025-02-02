@@ -4,8 +4,9 @@ export interface iPost {
   title: string;
   content: string;
   owner: string;
-  image?: string; // Optional field for the image URL
-  createdAt: Date; // New createdAt field
+  username: string;
+  image?: string;
+  createdAt: Date;
 }
 
 const postSchema = new mongoose.Schema<iPost>({
@@ -21,12 +22,16 @@ const postSchema = new mongoose.Schema<iPost>({
     type: String,
     required: true,
   },
+  username: {
+    type: String,
+    required: true,
+  },
   image: {
-    type: String, // URL or path to the image
-    required: false, // Optional field
+    type: String,
+    required: false,
   },
 }, {
-  timestamps: true, // Automatically adds createdAt and updatedAt
+  timestamps: true,
 });
 
 const postModel = mongoose.model<iPost>("posts", postSchema);
