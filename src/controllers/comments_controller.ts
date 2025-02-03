@@ -32,18 +32,21 @@ class CommentController extends BaseController<iComment> {
 
     async getByPostId(req: Request, res: Response) {
         const postId = req.params.postId;
-
+    
         try {
             const comments = await this.model.find({ postId });
+            
             if (comments.length === 0) {
-                res.status(404).send("No comments found for this post");
+                res.status(200).send([]);
                 return;
             }
+            
             res.status(200).send(comments);
         } catch (err) {
             res.status(400).send(err);
         }
     }
+    
 }
 
 export default new CommentController();

@@ -112,8 +112,8 @@ describe("Commnents test suite", () => {
     const newPostId = new mongoose.Types.ObjectId().toString();
   
     const response = await request(app).get("/comments/post/" + newPostId);
-    expect(response.statusCode).toBe(404);
-    expect(response.text).toBe("No comments found for this post");
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe("[]");
   });  
 
   test("Test update comment", async () => {
