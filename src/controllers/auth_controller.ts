@@ -292,6 +292,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, data) => {
         if (err) {
             res.status(401).send({ message: "Access Denied" });
+            console.log("Token Expired, Refresh!");
             return;
         }
         req.params.userId = (data as TokenPayload)._id;
