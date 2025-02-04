@@ -373,4 +373,6 @@ router.put("/:id", authMiddleware, commentsController.update.bind(commentsContro
  */
 router.delete("/:id", authMiddleware, commentsController.delete.bind(commentsController));
 
+router.put("/update/:owner", authMiddleware, commentsController.updateManyByOwner.bind(commentsController));
+
 export default router;

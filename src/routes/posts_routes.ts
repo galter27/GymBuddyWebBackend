@@ -306,4 +306,6 @@ router.put("/:id", authMiddleware, postsController.update.bind(postsController))
  */
 router.delete("/:id", authMiddleware, postsController.delete.bind(postsController));
 
+router.put("/update/:owner", authMiddleware, postsController.updateManyByOwner.bind(postsController));
+
 export default router;
