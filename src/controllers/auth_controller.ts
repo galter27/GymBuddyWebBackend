@@ -230,7 +230,10 @@ const updateUser = async (req: Request, res: Response) => {
 
         const updatedUser = await user.save();
         console.log('User updated');
-        res.status(200).send(updatedUser);
+        res.status(200).send({
+            username: updatedUser.username,
+            avatar: updatedUser.avatar
+        });
     } catch (error) {
         res.status(500).send({ message: "Server error", error });
     }
