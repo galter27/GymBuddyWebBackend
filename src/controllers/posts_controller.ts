@@ -23,6 +23,31 @@ class PostController extends BaseController<iPost> {
         await commentsModel.deleteMany({ postId });
         super.delete(req, res);
     }
+
+    async updateManyByOwner(req: Request, res: Response) {
+        const owner = req.params.owner;
+        const newUsername = req.body.username;
+    
+        if (!newUsername) {
+            res.status(400).send({ message: "New username is required" });
+            return;
+        }
+    
+        try {
+            const result = await this.model.updateMany(
+                { owner: owner },
+                { $set: { username: newUsername } }
+            );
+    
+            res.status(200).send({
+                message: "Posts updated",
+                matchedCount: result.matchedCount,
+                modifiedCount: result.modifiedCount
+            });
+        } catch (err) {
+            res.status(400).send({ message: "Error updating posts", error: err });
+        }
+    }
 }
 
 export default new PostController();

@@ -10,7 +10,7 @@ class CommentController extends BaseController<iComment> {
 
     async create(req: Request, res: Response) {
         // Extract postId from route parameters
-        const postId = req.body.postId; 
+        const postId = req.body.postId;
 
         if (!postId) {
             res.status(400).send({ message: "postId is required" });
@@ -32,21 +32,46 @@ class CommentController extends BaseController<iComment> {
 
     async getByPostId(req: Request, res: Response) {
         const postId = req.params.postId;
-    
+
         try {
             const comments = await this.model.find({ postId });
-            
+
             if (comments.length === 0) {
                 res.status(200).send([]);
                 return;
             }
-            
+
             res.status(200).send(comments);
         } catch (err) {
             res.status(400).send(err);
         }
     }
+
+    async updateManyByOwner(req: Request, res: Response) {
+        const owner = req.params.owner;
+        const newUsername = req.body.username;
     
+        if (!newUsername) {
+            res.status(400).send({ message: "New username is required" });
+            return;
+        }
+    
+        try {
+            const result = await this.model.updateMany(
+                { owner: owner },
+                { $set: { username: newUsername } }
+            );
+    
+            res.status(200).send({
+                message: "Comments updated",
+                matchedCount: result.matchedCount,
+                modifiedCount: result.modifiedCount
+            });
+        } catch (err) {
+            res.status(400).send({ message: "Error updating comments", error: err });
+        }
+    }
+
 }
 
 export default new CommentController();
