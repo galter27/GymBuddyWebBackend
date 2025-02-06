@@ -2,7 +2,58 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user_model";
+import { OAuth2Client } from "google-auth-library";
 
+// Google SignIn
+const client = new OAuth2Client();
+const googleSignIn = async (req: Request, res: Response) => {
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: req.body.credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        })
+        const payload = ticket.getPayload();
+        const email = payload?.email;
+        
+        if (email) {
+            let user = await userModel.findOne({ 'email': email });
+            if (!user) {
+                user = await userModel.create({
+                    'email': email,
+                    'password': 'PlaceHolder',
+                    'username': payload.name,
+                    'avatar': payload.picture
+                });
+            }
+            const tokens = generateTokens(user._id.toString());
+
+            if (!tokens) {
+                res.status(400).send({ message: "Missing Configuration" });
+                return;
+            }
+
+            if (user.refreshTokens == null) {
+                user.refreshTokens = [];
+            }
+            user.refreshTokens.push(tokens.refreshToken);
+            await user.save();
+
+            res.status(200).send({
+                refreshToken: tokens.refreshToken,
+                accessToken: tokens.accessToken,
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+            });
+        }
+    } catch (error) {
+        console.error("Google token verification failed:", error);
+        res.status(400).send({ message: "Google token verification failed", error });
+    }
+}
+
+// Generate Token
 export const generateTokens = (_id: string): { accessToken: string, refreshToken: string } | null => {
     const random = Math.floor(Math.random() * 1000000);
 
@@ -309,5 +360,6 @@ export default {
     logout,
     refresh,
     updateUser,
+    googleSignIn
     // checkUser
 };
