@@ -34,7 +34,13 @@ class ChatMessageController extends BaseController<iChatMessage> {
 
     try {
       const result = await model.generateContent(prompt);
-      console.log(result.response.text());
+
+      // Save user request for future analytics
+      const newChatMessage = await this.model.create({
+        content,
+        username,
+        owner: userId,
+      });
 
       // Send the response back to the client
       res.status(201).send({ response: result.response.text() });

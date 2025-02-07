@@ -22,7 +22,7 @@ const chatMessageSchema = new mongoose.Schema<iChatMessage>(
       required: true,
     },
   },
-  { timestamps: true }  // Automatically generates createdAt and updatedAt fields
+  { timestamps: true }
 );
 
 const chatMessageModel = mongoose.model<iChatMessage>("chatmessages", chatMessageSchema);
