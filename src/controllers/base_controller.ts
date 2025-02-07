@@ -47,12 +47,17 @@ export class BaseController<T> {
   }
 
   async update(req: Request, res: Response) {
-    const id = req.params.id;
+    const { id, userId } = req.params;
     const updateData = req.body;
+
     try {
-      const updatedObject = await this.model.findByIdAndUpdate(id, updateData, { new: true });
+      const updatedObject = await this.model.findOneAndUpdate(
+        { _id: id, owner: userId },
+        updateData,
+        { new: true }
+      );
       if (updatedObject === null) {
-        res.status(404).send("Object not found");
+        res.status(404).send("Object not found or User unauthorized!");
         return;
       } else {
         res.status(200).send(updatedObject);
@@ -63,11 +68,11 @@ export class BaseController<T> {
   }
 
   async delete(req: Request, res: Response) {
-    const id = req.params.id;
+    const { id, userId } = req.params;
     try {
-      const deletedObject = await this.model.findByIdAndDelete(id);
+      const deletedObject = await this.model.findOneAndDelete({ _id: id, owner: userId });
       if (deletedObject === null) {
-        res.status(404).send("Object not found");
+        res.status(404).send("Object not found or User unauthorized!");
         return;
       } else {
         res.status(200).send("Object deleted successfully");
