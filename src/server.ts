@@ -11,6 +11,7 @@ import postsRoutes from './routes/posts_routes';
 import commentsRoutes from './routes/comments_routes';
 import authRoutes from './routes/auth_routes';
 import fileRoutes from './routes/files_routes';
+import chatRoutes from "./routes/chat_routes";
 
 // CORS Configuration to allow specific origin
 const corsOptions = {
@@ -35,6 +36,7 @@ app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/auth", authRoutes);
 app.use("/file", fileRoutes)
+app.use("/chat", chatRoutes);
 
 dotenv.config();
 
