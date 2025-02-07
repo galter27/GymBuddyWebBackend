@@ -8,4 +8,6 @@ router.post("/", authMiddleware, likesController.createLike);
 
 router.delete("/:postId", authMiddleware, likesController.deleteLike);
 
+router.get("/:postId/:userId", likesController.getLikeByOwner);
+
 export default router;
