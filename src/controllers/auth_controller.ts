@@ -18,9 +18,11 @@ const googleSignIn = async (req: Request, res: Response) => {
         if (email) {
             let user = await userModel.findOne({ 'email': email });
             if (!user) {
+                const salt = await bcrypt.genSalt();
+                const hashPassword = await bcrypt.hash(`PlaceHolder${[payload.name]}`, salt);
                 user = await userModel.create({
                     'email': email,
-                    'password': 'PlaceHolder',
+                    'password': hashPassword,
                     'username': payload.name,
                     'avatar': payload.picture
                 });
@@ -290,40 +292,6 @@ const updateUser = async (req: Request, res: Response) => {
     }
 };
 
-// // Check if user exists by ID extracted from JWT
-// const checkUser = async (req: Request, res: Response) => {
-//     try {
-//         const authorizationHeader = req.header("authorization");
-//         const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
-
-//         if (!accessToken) {
-//             res.status(401).json({ message: "Unauthorized: No token provided" });
-//             return;
-//         }
-
-//         if (!process.env.TOKEN_SECRET) {
-//             res.status(500).json({ message: "Server Error" });
-//             return;
-//         }
-
-//         // Verify and decode token
-//         const decoded = jwt.verify(accessToken, process.env.TOKEN_SECRET) as TokenPayload;
-//         const userId = decoded._id;
-
-//         // Find user in the database
-//         const user = await userModel.findById(userId).select("-password");
-//         if (!user) {
-//             res.status(404).json({ message: "User not found" });
-//             return;
-//         }
-
-//         res.status(200).json(user);
-//     } catch (error) {
-//         res.status(401).json({ message: "Invalid or expired token" });
-//         return;
-//     }
-// };
-
 type TokenPayload = {
     _id: string;
 };
@@ -361,5 +329,4 @@ export default {
     refresh,
     updateUser,
     googleSignIn
-    // checkUser
 };
