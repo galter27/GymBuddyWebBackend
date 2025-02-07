@@ -177,4 +177,7 @@ router.post("/refresh", authController.refresh);
 
 router.put("/user", authMiddleware, authController.updateUser);
 
+
+router.post("/google", authController.googleSignIn);
+
 export default router;
