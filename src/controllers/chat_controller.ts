@@ -27,7 +27,7 @@ class ChatMessageController extends BaseController<iChatMessage> {
     const prompt = `
     Please provide a concise yet informative response focused on sports or workouts. 
     If the question is not about sports or workouts, please mention that the question is outside the scope of this service in a humorous or playful way, like "Oops! Looks like you're asking about something outside the gym." 
-    Keep your answer balanced—not too short, but also not too long. 
+    Keep your answer balanced—not too short, but also not too long. Don't use special Characters and use new lines after each sentence.
     Question: ${content}
     `;    
   
