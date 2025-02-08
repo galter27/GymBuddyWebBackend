@@ -8,8 +8,6 @@ import userModel from "../models/user_model";
 const createLike = async (req: Request, res: Response) => {
     const postId = req.body.postId;
     const userId = req.params.userId;
-    console.log("Post ID", postId);
-    console.log("User ID", userId)
 
     // Validate Post and User
     const isValid = await validateLike(postId, userId);
