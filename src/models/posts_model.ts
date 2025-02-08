@@ -7,6 +7,7 @@ export interface iPost {
   username: string;
   image?: string;
   createdAt: Date;
+  likesCount: number;
 }
 
 const postSchema = new mongoose.Schema<iPost>({
@@ -30,6 +31,10 @@ const postSchema = new mongoose.Schema<iPost>({
     type: String,
     required: false,
   },
+  likesCount: {
+    type: Number,
+    default: 0,
+  }
 }, {
   timestamps: true,
 });
