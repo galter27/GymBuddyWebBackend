@@ -10,7 +10,7 @@ const createLike = async (req: Request, res: Response) => {
     const userId = req.params.userId;
     console.log("Post ID", postId);
     console.log("User ID", userId)
-    
+
     // Validate Post and User
     const isValid = await validateLike(postId, userId);
     if (!isValid) {
@@ -23,6 +23,9 @@ const createLike = async (req: Request, res: Response) => {
             owner: userId,
             postId: postId
         });
+        // Increment likesCount in Post
+        await postModel.findByIdAndUpdate(postId, { $inc: { likesCount: 1 } });
+
         res.status(201).send(likeObject);
     } catch (err) {
         res.status(400).send({ message: "Error creating like", error: err });
@@ -46,6 +49,10 @@ const deleteLike = async (req: Request, res: Response) => {
             res.status(404).send({ message: "Like not found or unauthorized" });
             return;
         }
+
+        // Decrement likesCount in Post
+        await postModel.findByIdAndUpdate(postId, { $inc: { likesCount: -1 } });
+
         res.status(200).send({ message: "Like deleted successfully" });
     } catch (err) {
         res.status(400).send({ message: "Error deleting like", error: err });
