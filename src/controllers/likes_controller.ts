@@ -31,13 +31,12 @@ const createLike = async (req: Request, res: Response) => {
 
 // Delete Like
 const deleteLike = async (req: Request, res: Response) => {
-    const { postId, userId } = req.body;
+    const { postId, userId } = req.params;
 
     // Validate Post and User
     const isValid = await validateLike(postId, userId);
     if (!isValid) {
         res.status(400).send({ message: "Unauthorized or Invalid Data" });
-        console.log("Entered")
         return;
     }
 
