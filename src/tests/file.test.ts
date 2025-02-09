@@ -54,4 +54,10 @@ describe("File Tests - Upload File", () => {
       }
     }
   });
+
+  test("should return 400 when no file is uploaded", async () => {
+    const response = await request(app).post("/file");
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe("No file uploaded");
+  });
 });
