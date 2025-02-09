@@ -50,7 +50,6 @@ const googleSignIn = async (req: Request, res: Response) => {
             });
         }
     } catch (error) {
-        console.error("Google token verification failed:", error);
         res.status(400).send({ message: "Google token verification failed", error });
     }
 }
@@ -301,8 +300,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     const accessToken = authorizationHeader && authorizationHeader.split(" ")[1];
 
     if (!accessToken) {
-        res.status(401).send({ message: "Access Denied" });
-        console.log("Faild");
+        res.status(401).send({ message: "Access Denied" });;
         return;
     }
 

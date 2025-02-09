@@ -58,6 +58,24 @@ export const testUser: User = {
   password: "password123"
 }
 
+export const testUser2: User = {
+  username: "Gabi178",
+  email: "gabi2@example.com",
+  password: "password123"
+}
+
+export const testUser3: User = {
+  username: "Gal178",
+  email: "gal2@example.com",
+  password: "password123"
+}
+
+export const failedTestUser: User = {
+  username: "Gabi17",
+  email: "gabi17@example.com",
+  password: "password123"
+}
+
 export const invalidEmailTestUser: User = {
   username: "Gabi18",
   email: "gabi@example",

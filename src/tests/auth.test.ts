@@ -4,8 +4,10 @@ import mongoose from "mongoose";
 import { Express } from "express";
 import {
   testUser,
+  testUser2,
+  testUser3,
   testPost,
-  testPost2,
+  failedTestUser,
   invalidEmailTestUser,
   noPasswordTestUser,
   shortPasswordTestUser,
@@ -34,6 +36,18 @@ describe("Authentication and Authorization Test Suite", () => {
     test("Successful registration", async () => {
       const response = await request(app).post(`${baseUrl}/register`).send(testUser);
       expect(response.statusCode).toBe(200);
+
+      const response2 = await request(app).post(`${baseUrl}/register`).send(testUser2);
+      expect(response2.statusCode).toBe(200);
+
+      const response3 = await request(app).post(`${baseUrl}/register`).send(testUser3);
+      expect(response3.statusCode).toBe(200);
+    });
+
+    test("Register - Username already taken", async () => {
+      const response = await request(app).post(`${baseUrl}/register`).send(failedTestUser);
+      expect(response.statusCode).toBe(400);
+      expect(response.body.message).toBe("Username already taken.");
     });
 
     test("Duplicate registration", async () => {
@@ -70,7 +84,28 @@ describe("Authentication and Authorization Test Suite", () => {
       testUser._id = response.body._id;
     });
 
-    test("Invalid email", async () => {
+    test("Update User Details", async () => {
+      const response = await request(app).put(`${baseUrl}/user`)
+        .send({
+          username: testUser.username = "Gabi20",
+          avatar: testUser.avatar = "/storage/newAvatar.jpeg"
+        })
+        .set({ authorization: `JWT ${testUser.accessToken}` });
+      expect(response.statusCode).toBe(200);
+    });
+
+    test("Update User Details - Username Taken", async () => {
+      const response = await request(app).put(`${baseUrl}/user`)
+        .send({
+          username: testUser.username = "Gabi20",
+          avatar: testUser.avatar = ""
+        })
+        .set({ authorization: `JWT ${testUser.accessToken}` });
+      expect(response.statusCode).toBe(401);
+      expect(response.body.message).toBe("Username already taken");
+    });
+
+    test("Invalid email login", async () => {
       const response = await request(app).post(`${baseUrl}/login`).send({
         email: testUser.email + "m",
         password: testUser.password,
@@ -79,7 +114,7 @@ describe("Authentication and Authorization Test Suite", () => {
       expect(response.body.message).toBe("Invalid Username or Password");
     });
 
-    test("Invalid password", async () => {
+    test("Invalid password login", async () => {
       const response = await request(app).post(`${baseUrl}/login`).send({
         email: testUser.email,
         password: testUser.password + "m",
@@ -100,6 +135,22 @@ describe("Authentication and Authorization Test Suite", () => {
       });
 
       expect(firstLoginResponse.body.accessToken).not.toEqual(secondLoginResponse.body.accessToken);
+    });
+  });
+
+  describe("Google Authentication", () => {
+    test("Google login with invalid credential", async () => {
+      const response = await request(app).post(`${baseUrl}/google`).send({
+        credential: "InvalidTokenCredential"
+      });
+      expect(response.statusCode).not.toBe(200);
+    });
+
+    test("Google login success", async () => {
+      const response = await request(app).post(`${baseUrl}/google`).send({
+        credential: process.env.GOOGLE_TEST_USER_CREDENTIAL
+      });
+      expect(response.statusCode).toBe(200);
     });
   });
 
@@ -189,6 +240,46 @@ describe("Authentication and Authorization Test Suite", () => {
       });
       expect(response.statusCode).toBe(400);
       expect(response.body.message).toBe("Missing Token");
+    });
+
+    test("Logout - User not found", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser2.email,
+        password: testUser2.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+      testUser2.refreshToken = loginResponse.body.refreshToken;
+      testUser2.accessToken = loginResponse.body.accessToken;
+      testUser2._id = loginResponse.body._id;
+
+      // Delete User
+      await userModel.findOneAndDelete({ _id: testUser2._id });
+
+      const logoutResponse = await request(app).post(`${baseUrl}/logout`).send({
+        refreshToken: testUser2.refreshToken
+      });
+      expect(logoutResponse.status).toBe(400);
+    });
+
+    test("Update user data - User not found", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser3.email,
+        password: testUser3.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+      testUser3.refreshToken = loginResponse.body.refreshToken;
+      testUser3.accessToken = loginResponse.body.accessToken;
+      testUser3._id = loginResponse.body._id;
+
+      // Delete User
+      await userModel.findOneAndDelete({ _id: testUser3._id });
+
+      const updateUserResponse = await request(app).put(`${baseUrl}/user`)
+      .set({ authorization: `JWT ${testUser3.accessToken}` })
+      .send({
+        username: "NewUsername"
+      });
+      expect(updateUserResponse.status).toBe(404);
     });
 
     test("Refresh with invalid token", async () => {
@@ -298,7 +389,26 @@ describe("Authentication and Authorization Test Suite", () => {
       process.env.TOKEN_SECRET = originalSecret;
     });
 
-    jest.setTimeout(10000);
+    test("Update user when TOKEN_SECRET is missing from server", async () => {
+      const loginResponse = await request(app).post(`${baseUrl}/login`).send({
+        email: testUser.email,
+        password: testUser.password,
+      });
+      expect(loginResponse.statusCode).toBe(200);
+
+      const originalSecret = process.env.TOKEN_SECRET;
+      delete process.env.TOKEN_SECRET;
+
+      const response = await request(app).put(`${baseUrl}/user`)
+      .set({ authorization: 'JWT ' + testUser.accessToken })
+      .send({ username: "newUsernameFail" });
+      expect(response.statusCode).toBe(500);
+      expect(response.body.message).toBe("Server Error");
+
+      process.env.TOKEN_SECRET = originalSecret;
+    });
+
+    jest.setTimeout(20000);
     test("Timeout on refresh access token", async () => {
       const loginResponse = await request(app).post(`${baseUrl}/login`).send({
         email: testUser.email,
@@ -311,7 +421,7 @@ describe("Authentication and Authorization Test Suite", () => {
       testUser.refreshToken = loginResponse.body.refreshToken;
 
       // wait for 6 seconds
-      await new Promise(resolve => setTimeout(resolve, 6000));
+      await new Promise(resolve => setTimeout(resolve, 15000));
 
       //try to access with expired token
       const invalidResponse = await request(app).post("/posts").set({
