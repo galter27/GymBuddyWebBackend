@@ -173,7 +173,7 @@ const logout = async (req: Request, res: Response) => {
         return;
     }
 
-    jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: any, data: any) => {
+    jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: unknown, data: unknown) => {
         if (err) {
             res.status(403).send({ message: "Invalid Token" });
             return;
@@ -216,7 +216,7 @@ const refresh = async (req: Request, res: Response) => {
         return;
     }
 
-    jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: any, data: any) => {
+    jwt.verify(refreshToken, process.env.TOKEN_SECRET, async (err: unknown, data: unknown) => {
         if (err) {
             res.status(403).send({ message: "Token expired or invalid" });
             return;

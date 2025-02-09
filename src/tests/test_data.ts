@@ -75,3 +75,14 @@ export const shortPasswordTestUser: User = {
   email: "gal@example.com",
   password: "123"
 }
+
+
+// Chat data
+export const testChatMessage = {
+  content: "How do I build muscle?",
+  username: "testUser",
+};
+
+export const invalidChatMessage = {
+  username: "testUser", 
+};

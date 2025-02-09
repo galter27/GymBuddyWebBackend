@@ -10,6 +10,8 @@
     "testPosts": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit posts.test.ts",
     "testComments": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit comments.test.ts",
     "testFile": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit file.test.ts",
+    "testLikes": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit likes.test.ts",
+    "testChat": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit chat.test.ts",
     "lint": "npx eslint . --ext .ts"
   },
   "author": "",

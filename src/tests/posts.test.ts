@@ -141,3 +141,47 @@ describe("Posts test suite", () => {
   });
 
 });
+
+test("Test updateManyByOwner without username", async () => {
+  const response = await request(app)
+    .put(`/posts/update/${testUser._id}`) 
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({});
+  expect(response.statusCode).toBe(400);
+  expect(response.body.message).toBe("New username is required");
+});
+
+test("Test updateManyByOwner with valid username", async () => {
+  const newUsername = "updatedUsername";
+  const response = await request(app)
+    .put(`/posts/update/${testUser._id}`)
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ username: newUsername });
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body.message).toBe("Posts updated");
+  expect(response.body.matchedCount).toBeGreaterThanOrEqual(0);
+  expect(response.body.modifiedCount).toBeGreaterThanOrEqual(0);
+});
+
+test("Test delete post that doesn't exist", async () => {
+  const response = await request(app)
+    .delete("/posts/000000000000000000000000")
+    .set({ authorization: "JWT " + testUser.accessToken });
+  expect(response.statusCode).toBe(404);
+});
+
+test("Test updateManyByOwner with database error", async () => {
+  jest.spyOn(postModel, "updateMany").mockRejectedValue(new Error("Database error"));
+
+  const response = await request(app)
+    .put(`/posts/update/${testUser._id}`)
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ username: "newUsername" });
+
+  expect(response.statusCode).toBe(400);
+  expect(response.body.message).toBe("Error updating posts");
+  expect(response.body.error).toBeDefined();
+
+  jest.restoreAllMocks();
+});
