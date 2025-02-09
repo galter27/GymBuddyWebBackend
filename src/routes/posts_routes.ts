@@ -59,6 +59,7 @@ const router = express.Router();
  */
 router.get("/", postsController.getAll.bind(postsController));
 
+
 /**
  * @swagger
  * /posts/{id}:
@@ -114,6 +115,7 @@ router.get("/", postsController.getAll.bind(postsController));
  *                   example: "Object not found"
  */
 router.get("/:id", postsController.getById.bind(postsController));
+
 
 /**
  * @swagger
@@ -176,6 +178,7 @@ router.get("/:id", postsController.getById.bind(postsController));
  *         description: Internal server error
  */
 router.post("/", authMiddleware, postsController.create.bind(postsController));
+
 
 /**
  * @swagger
@@ -253,6 +256,7 @@ router.post("/", authMiddleware, postsController.create.bind(postsController));
  */
 router.put("/:id", authMiddleware, postsController.update.bind(postsController));
 
+
 /**
  * @swagger
  * /posts/{id}:
@@ -306,6 +310,60 @@ router.put("/:id", authMiddleware, postsController.update.bind(postsController))
  */
 router.delete("/:id", authMiddleware, postsController.delete.bind(postsController));
 
+
+/**
+ * @swagger
+ * /posts/update/{owner}:
+ *   put:
+ *     summary: Update all posts by a specific owner
+ *     description: Updates the username in all posts when a user changes their username.
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: owner
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the post owner whose username needs to be updated
+ *     requestBody:
+ *       description: New username to update in all posts
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The new username to be set in all posts
+ *     responses:
+ *       200:
+ *         description: Posts updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Posts updated"
+ *                 matchedCount:
+ *                   type: integer
+ *                   description: Number of posts that matched the owner ID
+ *                 modifiedCount:
+ *                   type: integer
+ *                   description: Number of posts that were updated
+ *       400:
+ *         description: Bad request (missing username or update error)
+ *       401:
+ *         description: Unauthorized, invalid or missing Access Token
+ *       500:
+ *         description: Internal server error
+ */
 router.put("/update/:owner", authMiddleware, postsController.updateManyByOwner.bind(postsController));
 
 export default router;

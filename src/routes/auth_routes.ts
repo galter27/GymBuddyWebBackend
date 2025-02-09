@@ -8,7 +8,7 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Authentication
- *   description: API for user authentication (register, login, logout, refresh token)
+ *   description: API for user authentication (register, login, logout, refresh token, update user, google authntication)
  */
 
 /**
@@ -30,16 +30,25 @@ const router = express.Router();
  *       required:
  *         - email
  *         - password
+ *         - username
  *       properties:
+ *         username:
+ *           type: string
+ *           description: The user unique username
  *         email:
  *           type: string
  *           description: The user email
  *         password:
  *           type: string
  *           description: The user password
+ *         avatar:
+ *           type: string
+ *           description: The user avatar url
  *       example:
+ *         username: 'gabi17'
  *         email: 'gabi@gmail.com'
  *         password: 'password123'
+ *         avatar: ''
  */
 
 
@@ -70,6 +79,7 @@ const router = express.Router();
  */
 router.post("/register", authController.register);
 
+
 /**
  * @swagger
  * /auth/login:
@@ -82,7 +92,16 @@ router.post("/register", authController.register);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "gabi@gmail.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "password123"
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -97,12 +116,17 @@ router.post("/register", authController.register);
  *                   type: string
  *                 _id:
  *                   type: string
+ *                 username:
+ *                    type: string
+ *                 avatr:
+ *                    type: string
  *       400:
  *         description: Invalid credentials
  *       500:
  *         description: Internal server error
  */
 router.post("/login", authController.login);
+
 
 /**
  * @swagger
@@ -132,6 +156,7 @@ router.post("/login", authController.login);
  *         description: Internal server error
  */
 router.post("/logout", authController.logout);
+
 
 /**
  * @swagger
@@ -175,9 +200,97 @@ router.post("/logout", authController.logout);
 router.post("/refresh", authController.refresh);
 
 
+/**
+ * @swagger
+ * /auth/user:
+ *   put:
+ *     summary: Update the user details
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       description: User updated details
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "newUsername"
+ *               avatar:
+ *                 type: string
+ *                 format: uri
+ *                 example: "/storage/newAvatar.jpg"
+
+ *     responses:
+ *       200:
+ *         description: User updated successfully 
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 avatar:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Invalid inputs
+ *       500:
+ *         description: Internal server error
+ */
+
 router.put("/user", authMiddleware, authController.updateUser);
 
 
+/**
+ * @swagger
+ * /auth/google:
+ *   post:
+ *     summary: Authenticate or register a user using Google Sign-In
+ *     tags: [Authentication]
+ *     requestBody:
+ *       description: Google OAuth credential token
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - credential
+ *             properties:
+ *               credential:
+ *                 type: string
+ *                 description: The Google OAuth ID token
+ *     responses:
+ *       200:
+ *         description: User authenticated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 refreshToken:
+ *                   type: string
+ *                 accessToken:
+ *                   type: string
+ *                 _id:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 avatar:
+ *                   type: string
+ *       400:
+ *         description: Google token verification failed or missing configuration
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/google", authController.googleSignIn);
 
 export default router;

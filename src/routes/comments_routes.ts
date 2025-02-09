@@ -59,6 +59,7 @@ const router = express.Router();
  */
 router.get("/", commentsController.getAll.bind(commentsController));
 
+
 /**
  * @swagger
  * /comments/{id}:
@@ -114,6 +115,7 @@ router.get("/", commentsController.getAll.bind(commentsController));
  *                   example: "Object not found"
  */
 router.get("/:id", commentsController.getById.bind(commentsController));
+
 
 /**
  * @swagger
@@ -172,6 +174,7 @@ router.get("/:id", commentsController.getById.bind(commentsController));
  *                   example: "No comments found for this post"
  */
 router.get("/post/:postId", commentsController.getByPostId.bind(commentsController));
+
 
 /**
  * @swagger
@@ -244,6 +247,7 @@ router.get("/post/:postId", commentsController.getByPostId.bind(commentsControll
  *         description: Internal server error
  */
 router.post("/", authMiddleware, commentsController.create.bind(commentsController));
+
 
 /**
  * @swagger
@@ -320,6 +324,7 @@ router.post("/", authMiddleware, commentsController.create.bind(commentsControll
  */
 router.put("/:id", authMiddleware, commentsController.update.bind(commentsController));
 
+
 /**
  * @swagger
  * /comments/{id}:
@@ -373,6 +378,60 @@ router.put("/:id", authMiddleware, commentsController.update.bind(commentsContro
  */
 router.delete("/:id", authMiddleware, commentsController.delete.bind(commentsController));
 
+
+/**
+ * @swagger
+ * /comments/update/{owner}:
+ *   put:
+ *     summary: Update all comments by a specific owner
+ *     description: Updates the username in all comments when a user changes their username.
+ *     tags: [Comments]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: owner
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the comment owner whose username needs to be updated
+ *     requestBody:
+ *       description: New username to update in all comments
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The new username to be set in all comments
+ *     responses:
+ *       200:
+ *         description: Comments updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Comments updated"
+ *                 matchedCount:
+ *                   type: integer
+ *                   description: Number of comments that matched the owner ID
+ *                 modifiedCount:
+ *                   type: integer
+ *                   description: Number of comments that were updated
+ *       400:
+ *         description: Bad request (missing username or update error)
+ *       401:
+ *         description: Unauthorized, invalid or missing Access Token
+ *       500:
+ *         description: Internal server error
+ */
 router.put("/update/:owner", authMiddleware, commentsController.updateManyByOwner.bind(commentsController));
 
 export default router;

@@ -21,7 +21,50 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Route to handle file uploads
+/**
+ * @swagger
+ * tags:
+ *   - name: File Upload
+ *     description: Operations related to file uploads
+ */
+
+/**
+ * @swagger
+ * /file:
+ *   post:
+ *     summary: Upload a file to the server
+ *     description: This endpoint allows users to upload a single file to the server.
+ *     tags: [File Upload]
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       description: File to be uploaded
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The file to upload
+ *     responses:
+ *       200:
+ *         description: File uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   description: The URL of the uploaded file
+ *       400:
+ *         description: No file uploaded or invalid file format
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/', upload.single("file"), function (req, res) {
     if (!req.file) {
         res.status(400).send({ error: "No file uploaded" });
