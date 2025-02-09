@@ -153,3 +153,49 @@ describe("Commnents test suite", () => {
     expect(response.body).toHaveLength(0);
   });
 });
+
+test("Test update multiple comments by owner", async () => {
+  await request(app).post("/comments")
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ ...testComment, owner: testUser._id });
+
+  await request(app).post("/comments")
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ ...testComment, owner: testUser._id });
+
+  const existingComments = await commentsModel.find({ owner: testUser._id });
+  expect(existingComments.length).toBeGreaterThanOrEqual(2);
+
+  const updateResponse = await request(app)
+    .put("/comments/update/" + testUser._id)
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ username: "new_username" });
+
+  expect(updateResponse.statusCode).toBe(200);
+  expect(updateResponse.body.message).toBe("Comments updated");
+  expect(updateResponse.body.matchedCount).toBe(existingComments.length);
+  expect(updateResponse.body.modifiedCount).toBe(existingComments.length);
+
+});
+
+test("Test update multiple comments by non-existing owner", async () => {
+  const updateResponse = await request(app)
+    .put("/comments/update/000000000000000000000")
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({ username: "new_username" });
+
+  expect(updateResponse.statusCode).toBe(200);
+  expect(updateResponse.body.matchedCount).toBe(0);
+  expect(updateResponse.body.modifiedCount).toBe(0);
+});
+
+test("Test update multiple comments without username", async () => {
+  const updateResponse = await request(app)
+    .put("/comments/update/" + testUser._id)
+    .set({ authorization: "JWT " + testUser.accessToken })
+    .send({});
+
+  expect(updateResponse.statusCode).toBe(400);
+  expect(updateResponse.body.message).toBe("New username is required");
+});
+
