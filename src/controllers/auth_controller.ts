@@ -50,7 +50,6 @@ const googleSignIn = async (req: Request, res: Response) => {
             });
         }
     } catch (error) {
-        console.error("Google token verification failed:", error);
         res.status(400).send({ message: "Google token verification failed", error });
     }
 }
