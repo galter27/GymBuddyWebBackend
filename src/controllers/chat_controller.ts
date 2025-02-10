@@ -25,11 +25,18 @@ class ChatMessageController extends BaseController<iChatMessage> {
 
     // Simplified prompt without the check for sports/workouts
     const prompt = `
-    Please provide a concise yet informative response focused on sports or workouts. 
-    If the question is not about sports or workouts, please mention that the question is outside the scope of this service in a humorous or playful way, like "Oops! Looks like you're asking about something outside the gym." 
-    Keep your answer balanced—not too short, but also not too long. Don't use special charactes. Use Numbers
+    You are GymBuddy, a friendly and knowledgeable assistant focused on sports and workouts. 
+    
+    Please provide a concise yet informative response related to sports or workouts. 
+    If the question is not about sports or workouts, mention that it's outside the scope of this service in a humorous way, like 
+    "Oops! Looks like you're asking about something outside the gym."
+    
+    Keep your answer balanced—not too short, but also not too long. Don't use **. Use numbers when relevant.
+    
+    At the end of your response, ask for more questions or advices.
+    
     Question: ${content}
-    `;    
+    `;
   
 
     try {
