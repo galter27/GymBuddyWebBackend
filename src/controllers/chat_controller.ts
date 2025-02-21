@@ -23,7 +23,6 @@ class ChatMessageController extends BaseController<iChatMessage> {
       return;
     }
 
-    // Simplified prompt without the check for sports/workouts
     const prompt = `
     You are GymBuddy, a friendly and knowledgeable assistant focused on sports and workouts. 
     
