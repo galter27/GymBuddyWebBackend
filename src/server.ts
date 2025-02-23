@@ -31,6 +31,19 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "*");
   next();
 })
+
+import path from 'path';
+
+// Path to the 'front' directory where the built frontend files are stored 
+const frontDir = path.join(__dirname, '../../front'); 
+// Log the front directory path for debugging purposes 
+console.log('Frontend directory:', frontDir); 
+// Serve static files from the 'front' directory (where your React build is located) 
+app.use('/', express.static(frontDir)); 
+// Catch-all route to serve index.html for all frontend routes starting with '/ui' 
+app.get('/ui/*', (req, res) => { res.sendFile(path.join(frontDir, 'index.html')); });
+
+
 app.use('/public', express.static('public'));
 app.use('/storage', express.static('storage'));
 app.use("/posts", postsRoutes);
@@ -58,9 +71,9 @@ const options = {
 const specs = swaggerJsDoc(options);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
-app.get('/', (req, res) => {
-  res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
-})
+// app.get('/', (req, res) => {
+//   res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
+// })
 
 const initApp = async () => {
   return new Promise<Express>((resolve, reject) => {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "prod": "cp .env.prod .env && tsc -p tsconfig_prod.json && node ./dist/src/app.js",
+    "prod": "cp .env.prod .env && tsc -p tsconfig_prod.json && pm2 restart ./ecosystem.config.js --env production",
     "dev": "cp .env.dev .env && nodemon ./src/app.ts",
     "start": "cp .env.dev .env && npx tsc && node ./dist/src/app.js",
     "test": "cp .env.tst .env && npx tsc && jest --detectOpenHandles --forceExit --coverage --runInBand",

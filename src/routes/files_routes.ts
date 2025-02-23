@@ -1,10 +1,11 @@
 import express from "express";
 import multer from "multer";
 
+
 const router = express.Router();
 
 // Set a default value if DOMAIN_BASE is not defined
-const base = process.env.DOMAIN_BASE || 'http://localhost:3000';
+const base = process.env.DOMAIN_BASE;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
