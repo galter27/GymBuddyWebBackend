@@ -387,7 +387,7 @@ router.delete("/:id", authMiddleware, commentsController.delete.bind(commentsCon
  *     description: Updates the username in all comments when a user changes their username.
  *     tags: [Comments]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: owner
