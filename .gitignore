@@ -62,4 +62,4 @@ yarn-error.log*
 storage/
 
 # Front directory
-front/*
+front/
