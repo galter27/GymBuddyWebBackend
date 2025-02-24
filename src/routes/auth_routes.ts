@@ -207,7 +207,7 @@ router.post("/refresh", authController.refresh);
  *     summary: Update the user details
  *     tags: [Authentication]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       description: User updated details
  *       required: true

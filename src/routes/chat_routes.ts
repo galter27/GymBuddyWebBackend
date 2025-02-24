@@ -20,7 +20,7 @@ const router = express.Router();
  *     description: API for chatting with GymBuddy AI about fitness and gym topics
  *     tags: [GymBuddyChat]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       description: Chat message details
  *       required: true

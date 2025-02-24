@@ -19,7 +19,7 @@ const router = express.Router();
  *     description: Creates a like for a post by the authenticated user and increments the likes count for the post.
  *     tags: [Likes]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       description: The ID of the post to be liked by the user
  *       required: true
@@ -68,7 +68,7 @@ router.post("/", authMiddleware, likesController.createLike);
  *     description: Removes a like from a specific post and decrements the likes count for that post.
  *     tags: [Likes]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: postId

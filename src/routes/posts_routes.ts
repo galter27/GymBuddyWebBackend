@@ -319,7 +319,7 @@ router.delete("/:id", authMiddleware, postsController.delete.bind(postsControlle
  *     description: Updates the username in all posts when a user changes their username.
  *     tags: [Posts]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: owner
