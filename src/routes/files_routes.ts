@@ -1,11 +1,15 @@
 import express from "express";
 import multer from "multer";
+import dotenv from "dotenv";
 
+// Load environment variables
+dotenv.config();
 
 const router = express.Router();
 
 // Set a default value if DOMAIN_BASE is not defined
 const base = process.env.DOMAIN_BASE;
+console.log(base);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
