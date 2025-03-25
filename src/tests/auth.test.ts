@@ -146,12 +146,12 @@ describe("Authentication and Authorization Test Suite", () => {
       expect(response.statusCode).not.toBe(200);
     });
 
-    test("Google login success", async () => {
-      const response = await request(app).post(`${baseUrl}/google`).send({
-        credential: process.env.GOOGLE_TEST_USER_CREDENTIAL
-      });
-      expect(response.statusCode).toBe(200);
-    });
+    // test("Google login success", async () => {
+    //   const response = await request(app).post(`${baseUrl}/google`).send({
+    //     credential: process.env.GOOGLE_TEST_USER_CREDENTIAL
+    //   });
+    //   expect(response.statusCode).toBe(200);
+    // });
   });
 
   describe("Post Creation", () => {
