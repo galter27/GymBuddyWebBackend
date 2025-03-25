@@ -71,9 +71,9 @@ const options = {
 const specs = swaggerJsDoc(options);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
-// app.get('/', (req, res) => {
-//   res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
-// })
+app.get('/', (req, res) => {
+  res.send('Authors: Gabi Matatov 322404088 & Gal Ternovsky 323005512')
+})
 
 const initApp = async () => {
   return new Promise<Express>((resolve, reject) => {
